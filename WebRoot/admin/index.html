@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	
+	<title>${title}</title>
+
+	<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/layout.css" />
+	<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/style.css" />
+
+	<!-- jQuery -->
+	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/jquery.js"></script>
+	<!-- Bootstrap -->
+	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/bootstrap.js"></script>
+	<!-- artDialog -->
+	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/artDialog/artDialog.js??skin=twitter"></script>
+	
+	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/custom.js"></script>
+	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/common.js"></script>
+
+	<script type="text/javascript">
+	
+		var LOGOUT_URL = "${CONTEXT_PATH}/admin/logout";
+		
+		
+	</script>
+
+</head>
+
+<body>
+	<div class="navbar navbar-fixed-top bs-docs-nav" role="banner">
+
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="container-fluid">
+				
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">学籍管理系统</a>
+				</div>
+
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+					<ul class="nav navbar-nav navbar-right">
+						<li class="visible-xs-block"><a href="#">${admin.account!}[${roleName}]</a></li>
+						<li><a href="javascript:void()" class="logout">
+							<span class="glyphicon glyphicon-log-out"></span>
+							<span>退出系统</span>
+						</a>
+						</li>
+					</ul>
+				</div>
+				<!-- /.navbar-collapse -->
+			</div>
+			<!-- /.container-fluid -->
+		</nav>
+
+	</div>
+	<div class="clearfix"></div>
+	<div class="content">
+
+		<div class="sidebar">
+
+			<div class="sidebar-dropdown">
+				<a href="#">导航</a>
+			</div>
+
+			<div class="alert alert-success" role="alert">
+				<p>账号：<span class="label"><a href="${CONTEXT_PATH}/admin/myinfo">${admin.account!}</a></span></p>
+				<hr/>
+				<p>角色：<span class="label label-success">${roleName}</span></p>
+			</div>
+
+			<ul id="nav">
+
+				<# for( permission in permissions ) { #>
+				<li class="has_sub">
+					<a href="javascript:void()">
+						${permission.name}
+					</a>
+					
+					<ul>
+						<# for( p in permission.subPermissions ) { #>
+						<li>
+							<a href="${p.url}">${p.name}</a>
+						</li>
+						<# } #>
+					</ul>
+				</li>
+				<# } #>
+				
+			</ul>
+		</div>
+
+		<!-- Main bar -->
+		<div class="mainbar">
+		
+			<ol class="breadcrumb">
+			  	<li><a href="${CONTEXT_PATH}/admin">首页</a></li>
+			  	<li><a href="${CONTEXT_PATH} ${current}">${title}</a></li>
+			</ol>
+
+			<div class="matter">
+			
+				<div class="container">
+					
+					${layoutContent}
+
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+
+		<div class="clearfix"></div>
+	</div>
+</body>
+</html>
