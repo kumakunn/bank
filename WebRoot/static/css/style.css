@@ -1,0 +1,57 @@
+body {
+	font-size: 12px;
+	line-height: 22px;
+	height: 100%;
+	font: 12px/100% '微软雅黑', Verdana, Geneva, sans-serif;
+	color: #666;
+	border-top: 3px solid #eee;
+	background: #C1E0C3 url("../image/login-body-bg.png") repeat-x;
+	padding-top: 37px;
+	-webkit-font-smoothing: antialiased;
+
+}
+
+.pager {
+	margin: 5px 0;
+}
+
+/* Login and Register form */
+.admin-form {
+	margin: 200px auto;
+}
+
+.login-top {
+	padding-top: 35px;
+	padding-bottom: 35px;
+	border-bottom: 15px solid #FF9800;
+	background: #FFFFFF;
+}
+
+.login-form-wrapper {
+	border: 1px solid #BCBCBC;
+}
+
+.login-logo {
+	width: 296px;
+	height: 204px;
+	margin: 35px auto 5px;
+	text-align: center;
+	background: url("../image/login-logo.png");
+}
+
+.login-content {
+	background-color: #2D755D;
+	color: #FFFFFF;
+}
+
+.login-form-content {
+	padding-top: 25px;
+	padding-bottom: 25px;
+}
+
+.center {
+	width: auto;
+	display: table;
+	margin-left: auto;
+	margin-right: auto;
+}

@@ -5,8 +5,7 @@ body{
 	height: 100%;
 	font: 12px/100% '微软雅黑', Verdana, Geneva, sans-serif;
 	color: #666;
-	border-top: 3px solid #eee;
-	background:#343434 url("../image/cream.png") repeat;  
+	border-top: 3px solid #eee;  
 	padding-top: 37px;
 	-webkit-font-smoothing: antialiased;
 }
