@@ -1,4 +1,4 @@
-body {
+.login-body {
 	font-size: 12px;
 	line-height: 22px;
 	height: 100%;
@@ -55,3 +55,4 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 }
+

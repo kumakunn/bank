@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 11, 2014 at 07:17 AM
+-- Generation Time: Sep 13, 2014 at 06:04 PM
 -- Server version: 5.6.12-log
 -- PHP Version: 5.4.16
 
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `admin` (
 --
 
 INSERT INTO `admin` (`id`, `account`, `password`, `rid`, `time`, `tid`) VALUES
-(1, 'admin', 'admin', 1, '1409506814760', NULL),
+(1, 'admin', '123456', 1, '1410621981486', NULL),
 (2, '1', '1', 2, '1409507136547', NULL),
 (3, 'cIZoBbZ7', 'zhoutianjing', 3, '1409507166485', 177),
 (4, 'uFqLuV9v', 'qianxiancheng', 3, NULL, 176);
@@ -99,6 +99,20 @@ CREATE TABLE IF NOT EXISTS `detail` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='交易明细表' AUTO_INCREMENT=25 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dictionary`
+--
+
+CREATE TABLE IF NOT EXISTS `dictionary` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL COMMENT '名称',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='字典表' AUTO_INCREMENT=30 ;
 
 -- --------------------------------------------------------
 

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	
+	<title>农业银行管理系统</title>
+	
+	<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/layout.css" />
+	<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/style.css" />
+	
+	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/bootstrap.js"></script>
+	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/artDialog/artDialog.js??skin=twitter"></script>
+	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/common.js"></script>
+
+</head>
+
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<table class="table table-bordered table-hover">
+					<tr>
+						<td>账号</td>
+						<td><span>${admin.account}</span>&nbsp; <a
+							href="javascript:void()" class="btn btn-info btn-sm update-password">修改密码</a></td>
+					</tr>
+					<tr>
+						<td>角色</td>
+						<td>${admin.roleName}</td>
+					</tr>
+					<tr>
+						<td>登录时间</td>
+						<td>${time}</td>
+					</tr>
+				</table>
+					
+			</div>
+		</div>
+
+		<div class="form quick-post" style="display: none">
+			<form class="form-horizontal" action="${CONTEXT_PATH}/myinfo/update"
+				method="post">
+	
+				<div class="form-group">
+					<label class="control-label col-md-4" for="oldPassword">原密码</label>
+					<div class="col-md-8">
+						<input type="password" class="form-control" name="oldPassword">
+					</div>
+				</div>
+	
+				<div class="form-group">
+					<label class="control-label col-md-4" for="newPassword">新密码</label>
+					<div class="col-md-8">
+						<input type="password" class="form-control" name="newPassword">
+					</div>
+				</div>
+	
+				<div class="form-group">
+					<label class="control-label col-md-4" for="newPassword2">确认新密码</label>
+					<div class="col-md-8">
+						<input type="password" class="form-control" name="newPassword2">
+					</div>
+				</div>
+	
+				<div class="form-group result-tip" style="display: none">
+					<div class="col-md-8 col-md-offset-4">
+						<span class="help-block"></span>
+					</div>
+				</div>
+	
+			</form>
+		</div>
+	</div>
+
+<script type="text/javascript">
+		
+	$(document).ready(function() {
+
+		$('.update-password').click(function() {
+
+			$('.result-tip').css('display', 'none');
+			$('.help-block').text('');
+
+			art.dialog({
+				title : "修改密码",
+				content : $('.quick-post').html(),
+                   ok : function() {
+                   	$.ajax({
+						url : "${CONTEXT_PATH}/admin/myinfo/update",
+                           data : {
+							oldPassword : $('input[name="oldPassword"]').val(),
+							newPassword : $('input[name="newPassword"]').val(),
+							newPassword2 : $('input[name="newPassword2"]').val()
+						},
+                           success : function(data) {
+                               $('.result-tip').css('display','block');
+							$('.help-block').text(data.msg);
+                               if (data.status == "error") {
+                                   $('.result-tip').removeClass('has-success');
+								$('.result-tip').addClass('has-error');
+
+							} else if (data.status == "success") {
+                                   $('.result-tip').removeClass('has-error');
+								$('.result-tip').addClass('has-success');
+							}
+						}
+					});
+
+					return false;
+				},
+
+				cancelVal : '返回',
+				cancel : true
+			});
+
+		});
+
+	});
+</script>
+
+</body>
+</html>

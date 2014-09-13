@@ -4,14 +4,14 @@
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	
-	<title>${title}</title>
+	<title>农业银行管理系统</title>
 
 	<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/bootstrap.css" />
 	<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/layout.css" />
 	<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/style.css" />
 
 	<!-- jQuery -->
-	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/jquery.js"></script>
+	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/jquery-1.10.2.min.js"></script>
 	<!-- Bootstrap -->
 	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/bootstrap.js"></script>
 	<!-- artDialog -->
@@ -41,7 +41,7 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="#">七台河农业银行管理系统</a>
+					<a class="navbar-brand" href="#">农业银行管理系统</a>
 				</div>
 
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -71,23 +71,22 @@
 			</div>
 
 			<div class="alert alert-success" role="alert">
-				<p>账号：<span class="label"><a href="${CONTEXT_PATH}/admin/myinfo">${admin.account!}</a></span></p>
+				<p>账号：<span class="label"><a href="${CONTEXT_PATH}/admin/myinfo" target="content">${admin.account!}</a></span></p>
 				<hr/>
 				<p>角色：<span class="label label-success">${roleName}</span></p>
 			</div>
 
 			<ul id="nav">
 
-				<# list permissions as permission >
+				<#list permissions as permission >
 				<li class="has_sub">
 					<a href="javascript:void()">
 						${permission.name}
 					</a>
-					
 					<ul>
-						<# list permission.subPermissions as p >
+						<#list permission.subPermissions as p >
 						<li>
-							<a href="${CONTEXT_PATH}${p.url}">${p.name}</a>
+							<a href="${CONTEXT_PATH}${p.url}" target="content" onclick="current(this)">${p.name}</a>
 						</li>
 						</#list>
 					</ul>
@@ -98,23 +97,8 @@
 		</div>
 
 		<!-- Main bar -->
-		<div class="mainbar">
-		
-			<ol class="breadcrumb">
-			  	<li><a href="${CONTEXT_PATH}/admin">首页</a></li>
-			  	<li><a href="${CONTEXT_PATH} ${current}">${title}</a></li>
-			</ol>
-
-			<div class="matter">
-			
-				<div class="container">
-					
-					<iframe width="100%" height="100%" id="content" name="content" src="welcome.html"></iframe>
-
-				</div>
-				<div class="clearfix"></div>
-			</div>
-			<div class="clearfix"></div>
+		<div class="mainbar" >
+			<iframe width="100%" height="100%" frameborder="0" id="content" name="content" src="welcome.html"></iframe>
 		</div>
 
 		<div class="clearfix"></div>

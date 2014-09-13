@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>农业银行管理系统</title>
+
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/layout.css" />
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/style.css" />
+
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/bootstrap.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/artDialog/artDialog.js??skin=twitter"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/common.js"></script>
+
+</head>
+
+<body>
+	<div class="container">
+
+		<div class="row">
+			<div class="col-md-12">
+
+				<form class="form-inline" action="${CONTEXT_PATH}/admin/user/search" method="post" role="form">
+
+					<div class="form-group">
+						<div class="input-group">
+							<div class="input-group-addon">身份证号</div>
+							<input class="form-control" type="text" name="uuid" id="uuid" value="${searchUuid!}"
+								placeholder="">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="input-group">
+							<div class="input-group-addon">银行卡号</div>
+							<input class="form-control" type="text" name="name" id="name" value="${searchName!}"
+								placeholder="">
+						</div>
+					</div>
+
+					<input type="submit" class="btn btn-info" name="subButton" id="subButton" value="查询" />
+				</form>
+
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+			});
+		</script>
+	</div>
+
+</body>
+</html>

@@ -100,4 +100,8 @@ public class IndexController extends Controller {
 		redirect("login.html");
 	}
 
+	public void welcome() {
+		render("welcome.html");
+	}
+	
 }
