@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>农业银行管理系统</title>
+
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css"
+	href="${CONTEXT_PATH}/static/css/bootstrap-datetimepicker.min.css" />
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/layout.css" />
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/style.css" />
+
+
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/bootstrap.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/artDialog/artDialog.js??skin=twitter"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/common.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/picker.date.js"></script>
+</head>
+
+<body>
+	<div class="container">
+
+
+		<div class="row">
+			<div class="col-md-12">
+
+				<form class="form-horizontal" action="${CONTEXT_PATH}/admin/user/save" method="post"
+					enctype="multipart/form-data" role="form">
+
+					<input type="hidden" value="${(user.id)!}" name="user.id" />
+
+					<div class="form-group <#if nameMsg??>has-error</#if> ">
+
+						<label class="control-label col-md-1" for="user.name">姓 名</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control input-sm" name="user.name" value="${(user.name)!}" />
+						</div>
+						<p class="help-block col-md-2 required">（必填）</p>
+
+					</div>
+
+					<div class="form-group <#if identityMsg??>has-error</#if> ">
+
+						<label class="control-label col-md-1" for="user.identity">身份证</label>
+						<div class="col-md-3">
+							<input type="text" class="form-control input-sm" name="user.identity"
+								value="${(user.identity)!}" />
+						</div>
+						<p class="help-block col-md-2 required">（必填）</p>
+
+					</div>
+
+					<div class="form-group">
+
+						<label class="control-label col-md-1" for="user.sex">性 别</label>
+						<div class="col-md-3">
+							<label class="radio-inline"> <input type="radio" name="user.sex" checked="checked"
+								value="1"> 男
+							</label> <label class="radio-inline"> <input type="radio" name="user.sex" value="2">
+								女
+							</label>
+						</div>
+
+					</div>
+
+					<div class="form-group <#if birthplaceMsg??>has-error</#if> ">
+
+						<label class="control-label col-md-1" for="user.birthplace">籍 贯</label>
+						<div class="col-md-5">
+							<input type="text" class="form-control input-sm" name="user.birthplace"
+								value="${(user.birthplace)!}" />
+						</div>
+						<p class="help-block col-md-2">精确到市（县）</p>
+
+					</div>
+
+					<div class="form-group <#if birthMsg??>has-error</#if>">
+
+						<label class="control-label col-md-1" for="user.birth">出生日期</label>
+						<div class="col-md-3">
+							<input type="text" class="form-control input-sm" name="user.birth" value="${(user.birth)!}" />
+						</div>
+						<p class="help-block col-md-4">出生日期例【1992-10-11】</p>
+					</div>
+
+					<div class="form-group <#if nationalMsg??>has-error</#if>">
+
+						<label class="control-label col-md-1" for="user.national">民 族</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control input-sm" name="user.national"
+								value="${(user.national)!}" />
+						</div>
+						<p class="help-block col-md-2 required">（必填）</p>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-1" for="user.feature">政治面貌</label>
+						<div class="col-md-3">
+							<select class="form-control input-sm" name="user.feature">
+							<#list features as feature>
+								<option value="${feature.id}" <#if (feature.id)! == (user.feature)!>selected=selected</#if> >${feature.name}</option>
+							</#list>
+							</select>
+						</div>
+						<p class="help-block col-md-2 required">（必填）</p>
+
+					</div>
+
+					<div class="form-group">
+
+						<label class="control-label col-md-1" for="user.address">家庭住址</label>
+						<div class="col-md-5 <#if addressMsg??>has-error</#if>">
+							<input type="text" class="form-control input-sm" name="user.address"
+								value="${(user.address)!}" />
+							<p class="help-block"></p>
+						</div>
+						<p class="help-block col-md-4">填写用户的完整地址（包括省份、地区）</p>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-1" for="user.phone">电 话</label>
+						<div class="col-md-3 <#if phoneMsg??>has-error</#if>">
+							<input type="text" class="form-control input-sm" name="user.phone" value="${(user.phone)!}" />
+						</div>
+						<p class="help-block col-md-2 required">（必填）</p>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-1" for="user.image">图 片</label>
+						<div class="col-md-3 <#if imageMsg??>has-error</#if>">
+							<input type="file" class="form-control input-sm" name="user.image" value="${(user.image)!}" />
+						</div>
+						<p class="help-block col-md-2 required">（必填）</p>
+
+					</div>
+
+					<hr />
+					<div class="form-group ">
+						<div class="col-md-offset-1 col-md-9">
+							<button type="submit" class="btn btn-primary">提 交</button>
+							<button type="reset" class="btn btn-danger">重 置</button>
+						</div>
+					</div>
+				</form>
+
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

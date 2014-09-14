@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 13, 2014 at 06:04 PM
+-- Generation Time: Sep 14, 2014 at 02:41 PM
 -- Server version: 5.6.12-log
 -- PHP Version: 5.4.16
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `access` (
   `tid` int(11) NOT NULL COMMENT '经办人（柜员）ID',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='存取款信息表' AUTO_INCREMENT=25 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='存取款信息表' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `admin` (
 --
 
 INSERT INTO `admin` (`id`, `account`, `password`, `rid`, `time`, `tid`) VALUES
-(1, 'admin', '123456', 1, '1410621981486', NULL),
+(1, 'admin', 'admin', 1, '1410704019491', NULL),
 (2, '1', '1', 2, '1409507136547', NULL),
 (3, 'cIZoBbZ7', 'zhoutianjing', 3, '1409507166485', 177),
 (4, 'uFqLuV9v', 'qianxiancheng', 3, NULL, 176);
@@ -75,12 +75,13 @@ INSERT INTO `admin` (`id`, `account`, `password`, `rid`, `time`, `tid`) VALUES
 CREATE TABLE IF NOT EXISTS `card` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uuid` varchar(45) NOT NULL COMMENT '卡号',
+  `identity` varchar(45) NOT NULL,
   `name` varchar(20) DEFAULT NULL COMMENT '持卡人名称',
   `type` int(11) DEFAULT '0' COMMENT '银行卡类型',
   `sort` int(11) DEFAULT '0' COMMENT '排序值',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='银行卡' AUTO_INCREMENT=25 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='银行卡' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -98,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `detail` (
   `sort` int(11) DEFAULT '0' COMMENT '排序值',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='交易明细表' AUTO_INCREMENT=25 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='交易明细表' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -109,10 +110,23 @@ CREATE TABLE IF NOT EXISTS `detail` (
 CREATE TABLE IF NOT EXISTS `dictionary` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL COMMENT '名称',
+  `key` varchar(45) NOT NULL,
+  `remark` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='字典表' AUTO_INCREMENT=30 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='字典表' AUTO_INCREMENT=6 ;
+
+--
+-- Dumping data for table `dictionary`
+--
+
+INSERT INTO `dictionary` (`id`, `name`, `key`, `remark`) VALUES
+(1, '男', 'sex', '性别'),
+(2, '女', 'sex', '性别'),
+(3, '党员', 'feature', '政治面貌'),
+(4, '团员', 'feature', '政治面貌'),
+(5, '群众', 'feature', '政治面貌');
 
 -- --------------------------------------------------------
 
@@ -128,7 +142,7 @@ CREATE TABLE IF NOT EXISTS `permission` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='权限表' AUTO_INCREMENT=26 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='权限表' AUTO_INCREMENT=22 ;
 
 --
 -- Dumping data for table `permission`
@@ -167,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `role` (
   `remark` varchar(45) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='角色表' AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='角色表' AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `role`
@@ -221,7 +235,7 @@ INSERT INTO `role_permission` (`rid`, `pid`) VALUES
 
 CREATE TABLE IF NOT EXISTS `teller` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` varchar(8) NOT NULL COMMENT '11位教师编号',
+  `uuid` varchar(45) NOT NULL COMMENT '银行柜员编号',
   `name` varchar(45) NOT NULL COMMENT '姓名',
   `identity` varchar(18) NOT NULL COMMENT '身份证',
   `rid` int(11) NOT NULL COMMENT '角色ID',
@@ -241,7 +255,7 @@ CREATE TABLE IF NOT EXISTS `teller` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `uuid_UNIQUE` (`uuid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='柜员信息表' AUTO_INCREMENT=191 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='柜员信息表' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -265,8 +279,17 @@ CREATE TABLE IF NOT EXISTS `user` (
   `image` varchar(100) DEFAULT NULL COMMENT '身份证图片url',
   `time` varchar(45) DEFAULT NULL COMMENT '开户时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='用户信息表' AUTO_INCREMENT=361 ;
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `identity_UNIQUE` (`identity`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='用户信息表' AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`id`, `name`, `identity`, `sex`, `birth`, `birthplace`, `national`, `phone`, `desc`, `address`, `status`, `sort`, `image`, `time`) VALUES
+(1, '张三', '130182198812123347', 1, '1988-12-12', '河北省藁城市', '汉', '13718621965', NULL, '北京市海淀区四季青', 0, 0, '/upload/avatar/1410691084823.jpg', '2014-09-14 06:38:04'),
+(2, '李四', '130182198912223349', 1, '1989-12-22', '河北省藁城市', '汉', '13718631365', NULL, '北京市海淀区四季青', 0, 0, '/upload/avatar/1410692218498.png', '2014-09-14 06:56:58');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

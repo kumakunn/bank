@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>农业银行管理系统</title>
+
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/layout.css" />
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/style.css" />
+
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/bootstrap.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/artDialog/artDialog.js??skin=twitter"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/common.js"></script>
+
+</head>
+
+<body>
+	<div class="container">
+
+		<div class="row">
+			<div class="col-md-12">
+
+				<form class="form-inline" action="${CONTEXT_PATH}/admin/user/search" method="post" role="form">
+
+					<div class="form-group">
+						<div class="input-group">
+							<div class="input-group-addon">身份证号</div>
+							<input class="form-control" type="text" name="identity" value="${searchIdentity!}"
+								placeholder="">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="input-group">
+							<div class="input-group-addon">银行卡号</div>
+							<input class="form-control" type="text" name="card" value="${searchCard!}" placeholder="">
+						</div>
+					</div>
+
+					<input type="submit" class="btn btn-info" value="查询" />
+				</form>
+
+			</div>
+		</div>
+
+		<br /> <br /> 
+		
+	<#if user?? >
+		<!--详细信息  -->
+		<div class="row">
+
+			<div class="col-lg-8 col-lg-offset-2">
+				<ul class="nav nav-tabs" role="tablist" id="myTab">
+					<li class="active"><a href="#user" role="tab" data-toggle="tab">基本信息</a></li>
+					<li><a href="#card" role="tab" data-toggle="tab">卡片信息</a></li>
+				</ul>
+
+				<div class="tab-content">
+					<div class="tab-pane active" id="user">
+						<br /> <br />
+						<div class="row">
+							<div class="col-lg-12">
+
+								<dl class="dl-horizontal">
+									<dt>身份证头像</dt>
+									<dd><img src="${CONTEXT_PATH}${(user.image)!}" onload="resizeImage(this, 100, 100)" /></dd>
+								</dl>
+								<dl class="dl-horizontal">
+									<dt>姓名</dt>
+									<dd>${user.name}</dd>
+								</dl>
+
+								<dl class="dl-horizontal">
+									<dt>身份证</dt>
+									<dd>${user.identity}</dd>
+								</dl>
+
+								<dl class="dl-horizontal">
+									<dt>性别</dt>
+									<dd><#if user.sex = 1>男<#else>女</#if></dd>
+								</dl>
+
+								<dl class="dl-horizontal">
+									<dt>籍贯</dt>
+									<dd>${user.birthplace}</dd>
+								</dl>
+
+								<dl class="dl-horizontal">
+									<dt>出生日期</dt>
+									<dd>${user.birth}</dd>
+								</dl>
+
+								<dl class="dl-horizontal">
+									<dt>民族</dt>
+									<dd>${user.national}</dd>
+								</dl>
+
+								<dl class="dl-horizontal">
+									<dt>家庭住址</dt>
+									<dd>${user.address}</dd>
+								</dl>
+
+								<dl class="dl-horizontal">
+									<dt>电话</dt>
+									<dd>${user.phone}</dd>
+								</dl>
+
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="card">
+						<br />
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>卡号</th>
+									<th>姓名</th>
+									<th>身份证</th>
+									<th>卡类</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>dd</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</#if>
+	
+	</div>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+
+		});
+	</script>
+
+
+</body>
+</html>

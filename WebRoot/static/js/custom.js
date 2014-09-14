@@ -79,7 +79,6 @@ function autosize() {
 	h = h < 400 ? 400 : h;
 	
 	$('.mainbar').css('height', h + 'px');
-//	$('.mainbar').css('width', w + 'px');
 	
 	if(webBodyWidth > 767) {
 		$('.mainbar').css('width', w + 'px');
