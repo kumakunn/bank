@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 14, 2014 at 02:41 PM
+-- Generation Time: Sep 15, 2014 at 03:32 PM
 -- Server version: 5.6.12-log
 -- PHP Version: 5.4.16
 
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `admin` (
 --
 
 INSERT INTO `admin` (`id`, `account`, `password`, `rid`, `time`, `tid`) VALUES
-(1, 'admin', 'admin', 1, '1410704019491', NULL),
+(1, 'admin', 'admin', 1, '1410773244796', NULL),
 (2, '1', '1', 2, '1409507136547', NULL),
 (3, 'cIZoBbZ7', 'zhoutianjing', 3, '1409507166485', 177),
 (4, 'uFqLuV9v', 'qianxiancheng', 3, NULL, 176);
@@ -81,7 +81,14 @@ CREATE TABLE IF NOT EXISTS `card` (
   `sort` int(11) DEFAULT '0' COMMENT '排序值',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='银行卡' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='银行卡' AUTO_INCREMENT=5 ;
+
+--
+-- Dumping data for table `card`
+--
+
+INSERT INTO `card` (`id`, `uuid`, `identity`, `name`, `type`, `sort`) VALUES
+(1, '9559980199806137273', '130182198812123347', '张三', 11, 0);
 
 -- --------------------------------------------------------
 
@@ -115,7 +122,7 @@ CREATE TABLE IF NOT EXISTS `dictionary` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='字典表' AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='字典表' AUTO_INCREMENT=13 ;
 
 --
 -- Dumping data for table `dictionary`
@@ -126,7 +133,14 @@ INSERT INTO `dictionary` (`id`, `name`, `key`, `remark`) VALUES
 (2, '女', 'sex', '性别'),
 (3, '党员', 'feature', '政治面貌'),
 (4, '团员', 'feature', '政治面貌'),
-(5, '群众', 'feature', '政治面貌');
+(5, '群众', 'feature', '政治面貌'),
+(6, '专科', 'education', '学历'),
+(7, '学士', 'education', '学历'),
+(8, '硕士', 'education', '学历'),
+(9, '博士', 'education', '学历'),
+(10, '其他', 'education', '学历'),
+(11, '借记卡', 'cardType', '农行卡类别'),
+(12, '货记卡', 'cardType', '农行卡类别');
 
 -- --------------------------------------------------------
 
@@ -255,7 +269,14 @@ CREATE TABLE IF NOT EXISTS `teller` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `uuid_UNIQUE` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='柜员信息表' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='柜员信息表' AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `teller`
+--
+
+INSERT INTO `teller` (`id`, `uuid`, `name`, `identity`, `rid`, `sex`, `birth`, `birthplace`, `national`, `feature`, `desc`, `education`, `address`, `phone`, `email`, `sort`, `image`, `time`) VALUES
+(2, 'pWnQyv4q', '小花', '130182155212544554', 3, 1, '1993-01-11', '河北省石家庄藁城市系名镇小乔村', '汉族', 4, 'asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf', 8, '河北省石家庄藁城市系名镇小乔村', '18231146578', '123123@qq.com', 1, '/upload/avatar/1410760412671.png', '2014-09-15 12:40:45');
 
 -- --------------------------------------------------------
 

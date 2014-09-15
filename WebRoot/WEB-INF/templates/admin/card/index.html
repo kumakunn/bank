@@ -14,7 +14,17 @@
 <script type="text/javascript" src="${CONTEXT_PATH}/static/js/bootstrap.js"></script>
 <script type="text/javascript" src="${CONTEXT_PATH}/static/js/artDialog/artDialog.js??skin=twitter"></script>
 <script type="text/javascript" src="${CONTEXT_PATH}/static/js/common.js"></script>
-
+<script type="text/javascript">
+function del(url){
+	if(confirm('您确定要删除本柜员信息？')) {
+		
+		$.get(url, function(data) {
+			alert(data.msg);
+			searchForm.submit();
+		});
+	}
+ }
+</script>
 </head>
 
 <body>
@@ -23,7 +33,7 @@
 		<div class="row">
 			<div class="col-md-12">
 
-				<form class="form-inline" action="${CONTEXT_PATH}/admin/user/search" method="post" role="form">
+				<form class="form-inline" name="searchForm" action="${CONTEXT_PATH}/admin/card/search" method="post" role="form">
 
 					<div class="form-group">
 						<div class="input-group">
@@ -32,14 +42,8 @@
 								placeholder="">
 						</div>
 					</div>
-					<div class="form-group">
-						<div class="input-group">
-							<div class="input-group-addon">银行卡号</div>
-							<input class="form-control" type="text" name="card" value="${searchCard!}" placeholder="">
-						</div>
-					</div>
 
-					<input type="submit" class="btn btn-info btn-sm" value="查询" />
+					<input type="submit" class="btn btn-info" value="查询" />
 				</form>
 
 			</div>
@@ -49,6 +53,7 @@
 		
 	<#if user?? >
 		<!--详细信息  -->
+		
 		<div class="row">
 
 			<div class="col-lg-8 col-lg-offset-2">
@@ -123,19 +128,33 @@
 								</tr>
 							</thead>
 							<tbody>
+							<#list cardList as card>
 								<tr>
-									<td>dd</td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
+									<td>${card.uuid}</td>
+									<td>${user.name}</td>
+									<td>${user.identity}</td>
+									<td>${card.type}</td>
+									<td align="center">
+										<a href="javascript:void(0)" onclick="del('/admin/card/delete/${card.id}')">删除</a>
+									</td>
 								</tr>
+							</#list>
 							</tbody>
 						</table>
+						<form action="${CONTEXT_PATH}/admin/card/add" id="addCardForm">
+						<button type="submit"  class="btn btn-primary">新增卡号</button>
+						<input type="hidden" value="${(user.id)!}" name="userId"/>
+						</form>
 					</div>
 				</div>
 			</div>
 		</div>
+		
+		
+	<#else>
+		 <#if searchIdentity! == "">
+			无此人信息请您预先录入此人信息<a href="${CONTEXT_PATH}/admin/user/add">进入新增用户界面</a>
+		</#if>
 	</#if>
 	
 	</div>

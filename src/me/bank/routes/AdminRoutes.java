@@ -5,6 +5,7 @@ import me.bank.controller.CardController;
 import me.bank.controller.DetailController;
 import me.bank.controller.IndexController;
 import me.bank.controller.MyInfoController;
+import me.bank.controller.TellerController;
 import me.bank.controller.UserController;
 
 import com.jfinal.config.Routes;
@@ -31,6 +32,9 @@ public class AdminRoutes extends Routes {
 
 		// 用户信息管理
 		add("/admin/user", UserController.class);
+
+		// 柜员信息管理
+		add("admin/teller", TellerController.class);
 
 	}
 
