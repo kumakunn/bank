@@ -39,18 +39,11 @@ public class UserController extends Controller {
 		
 		System.out.println("user = " + user);
 
-		List<Card> cards = new ArrayList<Card>();
+		List<Card> cardList = new ArrayList<Card>();
 
-		if (!ParaKit.isEmpty(uuid)) {
-			Card card = Card.dao.getCardByUuid(uuid);
-			cards.add(card);
-		} else if (user != null) {
+		cardList.addAll(user.getCards());
 
-			cards.addAll(user.getCards());
-
-		}
-
-		setAttr("cards", cards);
+		setAttr("cardList", cardList);
 
 		render("index.html");
 

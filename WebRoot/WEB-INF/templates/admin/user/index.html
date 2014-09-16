@@ -32,12 +32,6 @@
 								placeholder="">
 						</div>
 					</div>
-					<div class="form-group">
-						<div class="input-group">
-							<div class="input-group-addon">银行卡号</div>
-							<input class="form-control" type="text" name="card" value="${searchCard!}" placeholder="">
-						</div>
-					</div>
 
 					<input type="submit" class="btn btn-info btn-sm" value="查询" />
 				</form>
@@ -119,17 +113,17 @@
 									<th>姓名</th>
 									<th>身份证</th>
 									<th>卡类</th>
-									<th>操作</th>
 								</tr>
 							</thead>
 							<tbody>
+							<#list cardList as card>
 								<tr>
-									<td>dd</td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
+									<td>${card.uuid}</td>
+									<td>${user.name}</td>
+									<td>${user.identity}</td>
+									<td>${card.type}</td>
 								</tr>
+							</#list>
 							</tbody>
 						</table>
 					</div>
