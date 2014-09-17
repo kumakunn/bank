@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>农业银行管理系统</title>
+
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/layout.css" />
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/style.css" />
+
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/bootstrap.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/artDialog/artDialog.js??skin=twitter"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/common.js"></script>
+<script type="text/javascript">
+function del(url){
+	if(confirm('您确定要删除本柜员信息？')) {
+		
+		$.get(url, function(data) {
+			alert(data.msg);
+			searchForm.submit();
+		});
+	}
+ }
+ function save(){
+	  
+		     var params=$('input').serialize(); //序列化表单的值
+		     $.ajax({
+		       url:'${CONTEXT_PATH}/admin/access/getMoney', //后台处理程序
+		       type:'post',         //数据发送方式
+		       dataType:'json',     //接受数据格式
+		       data:params,         //要传递的数据
+		       success:update_page //回传函数(这里是函数名)
+		     });
+ }
+ 
+ function update_page (data) //回传函数实体，参数为XMLhttpRequest.responseText
+ {
+	alert(data.msg);
+	searchForm.submit();
+	
+ }
+</script>
+</head>
+
+<body>
+	<div class="container">
+
+		<div class="row">
+			<div class="col-md-12">
+
+				<form class="form-inline" name="searchForm" action="${CONTEXT_PATH}/admin/access/search/?s=get" method="post" role="form">
+
+					<div class="form-group">
+						<div class="input-group">
+							<div class="input-group-addon">银行卡号</div>
+							<input class="form-control" type="text" name="uuid" value="${searchUuid!}"
+								placeholder="">
+						</div>
+					</div>
+
+					<input type="submit" class="btn btn-info" value="查询" />
+				</form>
+
+			</div>
+		</div>
+
+		<br /> <br /> 
+	
+	<#if user?? >	
+							<div class="row">
+							<div class="col-lg-12">
+
+								<dl class="dl-horizontal">
+									<dt>身份证头像</dt>
+									<dd><img src="${CONTEXT_PATH}${(user.image)!}" onload="resizeImage(this, 100, 100)" /></dd>
+								</dl>
+								<dl class="dl-horizontal">
+									<dt>姓名</dt>
+									<dd>${(user.name)!}</dd>
+								</dl>
+
+								<dl class="dl-horizontal">
+									<dt>身份证</dt>
+									<dd>${(user.identity)!}</dd>
+								</dl>
+
+								<dl class="dl-horizontal">
+								
+									<dt>性别${(user.sex)!}</dt>
+									<dd><#if (user.sex)! == 1>男<#else>女</#if></dd>
+								</dl>
+
+								<dl class="dl-horizontal">
+									<dt>籍贯</dt>
+									<dd>${(user.birthplace)!}</dd>
+								</dl>
+
+								<dl class="dl-horizontal">
+									<dt>出生日期</dt>
+									<dd>${(user.birth)!}</dd>
+								</dl>
+
+								<dl class="dl-horizontal">
+									<dt>民族</dt>
+									<dd>${(user.national)!}</dd>
+								</dl>
+
+								<dl class="dl-horizontal">
+									<dt>家庭住址</dt>
+									<dd>${(user.address)!}</dd>
+								</dl>
+
+								<dl class="dl-horizontal">
+									<dt>电话</dt>
+									<dd>${(user.phone)!}</dd>
+								</dl>
+								<dl class="dl-horizontal">
+									<dt>卡号</dt>
+									<dd>${(card.uuid)!}</dd>
+								</dl>
+								<dl class="dl-horizontal">
+									<dt>持卡类型</dt>
+									<dd>${(card.type)!}</dd>
+								</dl>
+								<dl class="dl-horizontal">
+									<dt>余额</dt>
+									<dd>${(access.amount)!}</dd>
+								</dl>
+									
+							</div>
+						</div>
+						<hr></hr>
+						
+						
+							<div class="container">
+
+
+		<div class="row">
+			<div class="col-md-12">
+
+				<form class="form-horizontal" action="${CONTEXT_PATH}/admin/access/getMoney" method="post"
+					 role="form">
+
+					<input type="hidden" value="${(card.uuid)!}" name="uuid" />
+					<input type="hidden" value="${(user.id)!}" name="userid"/>
+					<div class="form-group <#if moneyMsg??>has-error</#if> ">
+
+						<label class="control-label col-md-1" for="money">取款金额</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control input-sm" name="money" value="${(money)!}" />
+						</div>
+						<p class="help-block col-md-4 required">（最多可取999999999）${moneyMsg!}${toBig!}</p>
+
+					</div>
+					
+					<div class="form-group <#if passwordMsg??>has-error</#if>">
+
+						<label class="control-label col-md-1" for="password">取款密码</label>
+						<div class="col-md-2">
+							<input type="password" class="form-control input-sm" name="password"
+								value="" />
+						</div>
+						<p class="help-block col-md-2 required">（必填）${passwordMsg!}</p>
+					</div>
+					
+					<hr />
+					
+					
+					<div class="form-group ">
+					
+						<div class="col-md-offset-1 col-md-9">
+							<button type="submit" id="subBtn"  class="btn btn-primary " <#if (access.amount)!<=0>disabled="disabled"</#if>>提 交</button>
+							<button type="reset" class="btn btn-danger">重 置</button>
+						</div>
+					</div>
+					<#if (access.amount)!<=0><p class="help-block col-md-2 required">余额不足不允许取款</p></#if>
+					<p class="help-block col-md-2 required">${lockMsg!}</p>
+				</form>
+
+			</div>
+		</div>
+	</div>
+						
+						
+		</#if>
+	</div>
+
+</body>
+</html>

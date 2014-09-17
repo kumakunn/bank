@@ -18,7 +18,6 @@
 <script type="text/javascript" src="${CONTEXT_PATH}/static/js/bootstrap-datetimepicker.min.js"></script>
 <script type="text/javascript" src="${CONTEXT_PATH}/static/js/artDialog/artDialog.js??skin=twitter"></script>
 <script type="text/javascript" src="${CONTEXT_PATH}/static/js/common.js"></script>
-<script type="text/javascript" src="${CONTEXT_PATH}/static/js/picker.date.js"></script>
 </head>
 
 <body>
@@ -28,39 +27,39 @@
 		<div class="row">
 			<div class="col-md-12">
 
-				<form class="form-horizontal" action="${CONTEXT_PATH}/admin/user/save" method="post"
+				<form class="form-horizontal" action="${CONTEXT_PATH}/admin/teller/save" method="post"
 					enctype="multipart/form-data" role="form">
 
-					<input type="hidden" value="${(user.id)!}" name="user.id" />
+					<input type="hidden" value="${(teller.id)!}" name="teller.id" />
 
 					<div class="form-group <#if nameMsg??>has-error</#if> ">
 
-						<label class="control-label col-md-1" for="user.name">姓 名</label>
+						<label class="control-label col-md-1" for="teller.name">姓 名</label>
 						<div class="col-md-2">
-							<input type="text" class="form-control input-sm" name="user.name" value="${(user.name)!}" />
+							<input type="text" class="form-control input-sm" name="teller.name" value="${(teller.name)!}" />
 						</div>
-						<p class="help-block col-md-2 required">（必填）</p>
+						<p class="help-block col-md-2 required">（必填）${nameMsg!}</p>
 
 					</div>
 
 					<div class="form-group <#if identityMsg??>has-error</#if> ">
 
-						<label class="control-label col-md-1" for="user.identity">身份证</label>
+						<label class="control-label col-md-1" for="teller.identity">身份证</label>
 						<div class="col-md-3">
-							<input type="text" class="form-control input-sm" name="user.identity"
-								value="${(user.identity)!}" />
+							<input type="text" class="form-control input-sm" name="teller.identity"
+								value="${(teller.identity)!}" />
 						</div>
-						<p class="help-block col-md-2 required">（必填）</p>
+						<p class="help-block col-md-2 required">（必填）${identityMsg!}</p>
 
 					</div>
 
 					<div class="form-group">
 
-						<label class="control-label col-md-1" for="user.sex">性 别</label>
+						<label class="control-label col-md-1" for="teller.sex">性 别</label>
 						<div class="col-md-3">
-							<label class="radio-inline"> <input type="radio" name="user.sex" checked="checked"
+							<label class="radio-inline"> <input type="radio" name="teller.sex" checked="checked"
 								value="1"> 男
-							</label> <label class="radio-inline"> <input type="radio" name="user.sex" value="2">
+							</label> <label class="radio-inline"> <input type="radio" name="teller.sex" value="2">
 								女
 							</label>
 						</div>
@@ -69,40 +68,40 @@
 
 					<div class="form-group <#if birthplaceMsg??>has-error</#if> ">
 
-						<label class="control-label col-md-1" for="user.birthplace">籍 贯</label>
+						<label class="control-label col-md-1" for="teller.birthplace">籍 贯</label>
 						<div class="col-md-5">
-							<input type="text" class="form-control input-sm" name="user.birthplace"
-								value="${(user.birthplace)!}" />
+							<input type="text" class="form-control input-sm" name="teller.birthplace"
+								value="${(teller.birthplace)!}" />
 						</div>
-						<p class="help-block col-md-2">精确到市（县）</p>
+						<p class="help-block col-md-2">精确到市（县）${birthplaceMsg!}</p>
 
 					</div>
 
 					<div class="form-group <#if birthMsg??>has-error</#if>">
 
-						<label class="control-label col-md-1" for="user.birth">出生日期</label>
+						<label class="control-label col-md-1" for="teller.birth">出生日期</label>
 						<div class="col-md-3">
-							<input type="text" class="form-control input-sm" name="user.birth" value="${(user.birth)!}" />
+							<input type="text" class="form-control input-sm" name="teller.birth" value="${(teller.birth)!}" />
 						</div>
-						<p class="help-block col-md-4">出生日期例【1992-10-11】</p>
+						<p class="help-block col-md-4">出生日期例【1992-10-11】${birthMsg!}</p>
 					</div>
 
 					<div class="form-group <#if nationalMsg??>has-error</#if>">
 
-						<label class="control-label col-md-1" for="user.national">民 族</label>
+						<label class="control-label col-md-1" for="teller.national">民 族</label>
 						<div class="col-md-2">
-							<input type="text" class="form-control input-sm" name="user.national"
-								value="${(user.national)!}" />
+							<input type="text" class="form-control input-sm" name="teller.national"
+								value="${(teller.national)!}" />
 						</div>
-						<p class="help-block col-md-2 required">（必填）</p>
+						<p class="help-block col-md-2 required">（必填）${nationalMsg!}</p>
 					</div>
 
 					<div class="form-group">
-						<label class="control-label col-md-1" for="user.feature">政治面貌</label>
+						<label class="control-label col-md-1" for="teller.feature">政治面貌</label>
 						<div class="col-md-3">
-							<select class="form-control input-sm" name="user.feature">
+							<select class="form-control input-sm" name="teller.feature">
 							<#list features as feature>
-								<option value="${feature.id}" <#if (feature.id)! == (user.feature)!>selected=selected</#if> >${feature.name}</option>
+								<option value="${feature.id}" <#if (feature.name)! == (teller.feature)! >selected="selected"</#if>>${feature.name}</option>
 							</#list>
 							</select>
 						</div>
@@ -111,33 +110,64 @@
 					</div>
 
 					<div class="form-group">
+						<label class="control-label col-md-1" for="teller.education">学历</label>
+						<div class="col-md-3">
+							<select class="form-control input-sm" name="teller.education">
+							<#list educations as education>
+								<option value="${education.id}" <#if (teller.education)! == (education.name)! >selected='selected'</#if> >${education.name}</option>
+							</#list>
+							</select>
+						</div>
+						<p class="help-block col-md-2 required">（必填）</p>
 
-						<label class="control-label col-md-1" for="user.address">家庭住址</label>
+					</div>
+					
+					<div class="form-group">
+
+						<label class="control-label col-md-1" for="teller.address">家庭住址</label>
 						<div class="col-md-5 <#if addressMsg??>has-error</#if>">
-							<input type="text" class="form-control input-sm" name="user.address"
-								value="${(user.address)!}" />
+							<input type="text" class="form-control input-sm" name="teller.address"
+								value="${(teller.address)!}" />
 							<p class="help-block"></p>
 						</div>
-						<p class="help-block col-md-4">填写用户的完整地址（包括省份、地区）</p>
+						<p class="help-block col-md-4">填写用户的完整地址（包括省份、地区）${addressMsg!}</p>
 					</div>
 
 					<div class="form-group">
-						<label class="control-label col-md-1" for="user.phone">电 话</label>
+						<label class="control-label col-md-1" for="teller.phone">电 话</label>
 						<div class="col-md-3 <#if phoneMsg??>has-error</#if>">
-							<input type="text" class="form-control input-sm" name="user.phone" value="${(user.phone)!}" />
+							<input type="text" class="form-control input-sm" name="teller.phone" value="${(teller.phone)!}" />
 						</div>
-						<p class="help-block col-md-2 required">（必填）</p>
+						<p class="help-block col-md-2 required">（必填）${phoneMsg!}</p>
 					</div>
 
 					<div class="form-group">
-						<label class="control-label col-md-1" for="user.image">图 片</label>
-						<div class="col-md-3 <#if imageMsg??>has-error</#if>">
-							<input type="file" class="form-control input-sm" name="user.image" value="${(user.image)!}" />
+						<label class="control-label col-md-1" for="teller.emial">邮箱</label>
+						<div class="col-md-3 <#if emailMsg??>has-error</#if>">
+							<input type="text" class="form-control input-sm" name="teller.email" value="${(teller.email)!}" />
 						</div>
-						<p class="help-block col-md-2 required">（必填）</p>
-
+						<p class="help-block col-md-2 required">（必填）${emailMsg!}</p>
 					</div>
 
+					<div class="form-group">
+						<label class="control-label col-md-1" for="teller.image">图 片</label>
+						<div class="col-md-3 <#if imageMsg??>has-error</#if>">
+							<input type="file" class="form-control input-sm" name="teller.image" value="${(teller.image)!}" />
+						</div>
+						<p class="help-block col-md-2 required">（必填）${imageMsg!}</p>
+
+					</div>
+					
+					<div class="form-group">
+
+						<label class="control-label col-md-1" for="teller.desc">柜员简介</label>
+						<div class="col-md-9 <#if descMsg??>has-error</#if>">
+							<textarea class="form-control" rows="3" name="teller.desc">${(teller.desc)!}</textarea>
+						</div>
+						<p class="help-block col-md-2 required">（必填）${descMsg!}</p>
+	
+					</div>
+					
 					<hr />
 					<div class="form-group ">
 						<div class="col-md-offset-1 col-md-9">

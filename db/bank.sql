@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 14, 2014 at 02:41 PM
+-- Generation Time: Sep 16, 2014 at 03:47 PM
 -- Server version: 5.6.12-log
 -- PHP Version: 5.4.16
 
@@ -31,12 +31,19 @@ USE `bank`;
 CREATE TABLE IF NOT EXISTS `access` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uuid` varchar(45) NOT NULL COMMENT '卡号',
-  `amount` int(20) DEFAULT NULL COMMENT '存取款金额',
+  `amount` decimal(20,3) DEFAULT NULL COMMENT '存取款金额',
   `time` varchar(45) NOT NULL COMMENT '交易时间',
   `tid` int(11) NOT NULL COMMENT '经办人（柜员）ID',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='存取款信息表' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='存取款信息表' AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `access`
+--
+
+INSERT INTO `access` (`id`, `uuid`, `amount`, `time`, `tid`) VALUES
+(1, '9559980196491319357', '9999999999.000', '2014-09-16 03:29:24', 7);
 
 -- --------------------------------------------------------
 
@@ -50,21 +57,23 @@ CREATE TABLE IF NOT EXISTS `admin` (
   `password` varchar(45) NOT NULL COMMENT '管理员密码',
   `rid` int(11) NOT NULL COMMENT '角色ID',
   `time` varchar(45) DEFAULT NULL COMMENT '登录时间',
-  `tid` int(11) DEFAULT NULL COMMENT '教师ID',
+  `tid` int(11) DEFAULT NULL COMMENT '相应职位id（例如柜员id）',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `account_UNIQUE` (`account`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='管理员表' AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='管理员表' AUTO_INCREMENT=8 ;
 
 --
 -- Dumping data for table `admin`
 --
 
 INSERT INTO `admin` (`id`, `account`, `password`, `rid`, `time`, `tid`) VALUES
-(1, 'admin', 'admin', 1, '1410704019491', NULL),
+(1, 'admin', 'admin', 1, '1410853494781', NULL),
 (2, '1', '1', 2, '1409507136547', NULL),
 (3, 'cIZoBbZ7', 'zhoutianjing', 3, '1409507166485', 177),
-(4, 'uFqLuV9v', 'qianxiancheng', 3, NULL, 176);
+(4, 'uFqLuV9v', 'qianxiancheng', 3, NULL, 176),
+(5, 'xiaohua', '212544', 3, NULL, 5),
+(7, 'xiaobai', '544554', 3, '1410859544921', 7);
 
 -- --------------------------------------------------------
 
@@ -78,10 +87,18 @@ CREATE TABLE IF NOT EXISTS `card` (
   `identity` varchar(45) NOT NULL,
   `name` varchar(20) DEFAULT NULL COMMENT '持卡人名称',
   `type` int(11) DEFAULT '0' COMMENT '银行卡类型',
+  `status` int(8) NOT NULL COMMENT '卡的审核状态0待审核，1通过',
   `sort` int(11) DEFAULT '0' COMMENT '排序值',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='银行卡' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='银行卡' AUTO_INCREMENT=9 ;
+
+--
+-- Dumping data for table `card`
+--
+
+INSERT INTO `card` (`id`, `uuid`, `identity`, `name`, `type`, `status`, `sort`) VALUES
+(8, '9559980196491319357', '130182198812123347', '张三', 11, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -91,11 +108,12 @@ CREATE TABLE IF NOT EXISTS `card` (
 
 CREATE TABLE IF NOT EXISTS `detail` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` varchar(45) NOT NULL COMMENT '序号',
+  `uid` int(11) NOT NULL COMMENT '用户id',
   `cid` int(11) NOT NULL COMMENT '银行卡ID',
   `time` varchar(45) DEFAULT NULL COMMENT '交易产生时间',
   `type` int(11) DEFAULT '0' COMMENT '交易类型（0：支出，1：收入）',
-  `amount` int(11) DEFAULT NULL COMMENT '交易额',
+  `amount` decimal(20,3) DEFAULT NULL COMMENT '交易额',
+  `balance` decimal(20,3) NOT NULL DEFAULT '0.000' COMMENT '交易后余额',
   `sort` int(11) DEFAULT '0' COMMENT '排序值',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
@@ -115,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `dictionary` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='字典表' AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='字典表' AUTO_INCREMENT=622838 ;
 
 --
 -- Dumping data for table `dictionary`
@@ -126,7 +144,15 @@ INSERT INTO `dictionary` (`id`, `name`, `key`, `remark`) VALUES
 (2, '女', 'sex', '性别'),
 (3, '党员', 'feature', '政治面貌'),
 (4, '团员', 'feature', '政治面貌'),
-(5, '群众', 'feature', '政治面貌');
+(5, '群众', 'feature', '政治面貌'),
+(6, '专科', 'education', '学历'),
+(7, '学士', 'education', '学历'),
+(8, '硕士', 'education', '学历'),
+(9, '博士', 'education', '学历'),
+(10, '其他', 'education', '学历'),
+(11, '中国农业银行世纪通宝借记卡', 'cardType', '农行卡类别'),
+(622836, '中国农业银行人民币贷记卡(金卡)', 'cardType', '农行卡类别'),
+(622837, '中国农业银行人民币贷记卡(普卡)', 'cardType', '农行卡类别');
 
 -- --------------------------------------------------------
 
@@ -162,11 +188,10 @@ INSERT INTO `permission` (`id`, `name`, `url`, `pid`) VALUES
 (13, '取款', '/admin/access/get', 4),
 (14, '存款', '/admin/access/save', 4),
 (15, '银行卡查询', '/admin/card/index', 5),
-(16, '添加银行卡', '/admin/card/add', 5),
 (17, '明细查询', '/admin/detail/index', 6),
 (18, '柜员信息列表', '/admin/teller/index', 7),
 (19, '录入柜员信息', '/admin/teller/add', 7),
-(20, '信用卡审核', '/admin/verify/credit', 8),
+(20, '信用卡审核', '/admin/verify/index', 8),
 (21, '贷款审核', '/admin/verify/loan', 8);
 
 -- --------------------------------------------------------
@@ -255,7 +280,15 @@ CREATE TABLE IF NOT EXISTS `teller` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `uuid_UNIQUE` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='柜员信息表' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='柜员信息表' AUTO_INCREMENT=8 ;
+
+--
+-- Dumping data for table `teller`
+--
+
+INSERT INTO `teller` (`id`, `uuid`, `name`, `identity`, `rid`, `sex`, `birth`, `birthplace`, `national`, `feature`, `desc`, `education`, `address`, `phone`, `email`, `sort`, `image`, `time`) VALUES
+(6, 'RrjGjdVS', '小花', '130182155212544', 3, 2, '1993-01-11', '河北省石家庄藁城市系名镇小乔村', '汉族', 4, '规划局股份很舒服的华盛顿放虎归山的分公司的风格谁的高富商大贾是大法官是大法官', 8, '河北省石家庄藁城市系名镇小乔村', '18231146578', '123123@qq.com', 1, '/upload/avatar/1410851393468.png', '2014-09-16 03:09:58'),
+(7, 'N4DmxRWR', '小白', '130182155212544554', 3, 1, '1993-01-11', '河北省石家庄藁城市系名镇小乔村', '汉族', 4, '按时大法师的发生的撒打算打算打算打算打算打算', 7, '河北省石家庄藁城市系名镇小乔村', '18231146578', '123123@qq.com', 1, '/upload/avatar/1410851810140.png', '2014-09-16 03:16:52');
 
 -- --------------------------------------------------------
 
@@ -265,6 +298,8 @@ CREATE TABLE IF NOT EXISTS `teller` (
 
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `getmoneyp` int(11) NOT NULL COMMENT '取款密码',
+  `errorNum` int(11) NOT NULL DEFAULT '0' COMMENT '输入错误密码次数',
   `name` varchar(45) NOT NULL COMMENT '姓名',
   `identity` varchar(18) NOT NULL COMMENT '身份证',
   `sex` int(11) NOT NULL COMMENT '性别',
@@ -287,9 +322,9 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `name`, `identity`, `sex`, `birth`, `birthplace`, `national`, `phone`, `desc`, `address`, `status`, `sort`, `image`, `time`) VALUES
-(1, '张三', '130182198812123347', 1, '1988-12-12', '河北省藁城市', '汉', '13718621965', NULL, '北京市海淀区四季青', 0, 0, '/upload/avatar/1410691084823.jpg', '2014-09-14 06:38:04'),
-(2, '李四', '130182198912223349', 1, '1989-12-22', '河北省藁城市', '汉', '13718631365', NULL, '北京市海淀区四季青', 0, 0, '/upload/avatar/1410692218498.png', '2014-09-14 06:56:58');
+INSERT INTO `user` (`id`, `getmoneyp`, `errorNum`, `name`, `identity`, `sex`, `birth`, `birthplace`, `national`, `phone`, `desc`, `address`, `status`, `sort`, `image`, `time`) VALUES
+(1, 123, 0, '张三', '130182198812123347', 1, '1988-12-12', '河北省藁城市', '汉', '13718621965', NULL, '北京市海淀区四季青', 0, 0, '/upload/avatar/1410691084823.jpg', '2014-09-14 06:38:04'),
+(2, 123, 0, '李四', '130182198912223349', 1, '1989-12-22', '河北省藁城市', '汉', '13718631365', NULL, '北京市海淀区四季青', 0, 0, '/upload/avatar/1410692218498.png', '2014-09-14 06:56:58');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
