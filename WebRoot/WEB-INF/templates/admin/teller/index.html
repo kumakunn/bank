@@ -18,7 +18,6 @@
 <script type="text/javascript">
 	function del(url) {
 		if (confirm('您确定要删除本柜员信息？')) {
-
 			$.get(url, function(data) {
 				alert(data.msg);
 				location.reload();
@@ -30,7 +29,7 @@
 </head>
 <body>
 
-	<div class="container">
+	<div class="container-fluid">
 
 		<div class="row">
 			<div class="col-md-12">
