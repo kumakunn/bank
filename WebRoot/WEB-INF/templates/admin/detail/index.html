@@ -44,7 +44,9 @@
 				</form>
 			</div>
 		</div>
-
+	
+	<#if detailList??>
+	
 		<br /> <br /> 
 		<div class="col-md-12">
 			<br />
@@ -68,9 +70,9 @@
 						<td>${detail.identity}</td>
 						<td>${detail.uuid}</td>
 						<td>${detail.time}</td>
-						<td><#if detail.type==0>支出<#else>存入</#if></td>
-						<td>${detail.amount}</td>
-						<td>${detail.balance}</td>
+						<td><#if detail.type == 0><span class="label label-danger">支出</span><#else><span class="label label-success">存入</span></#if></td>
+						<td><strong>${detail.amount}</strong></td>
+						<td><strong>${detail.balance}</strong></td>
 					</tr>
 				</#list>
 				</tbody>
@@ -96,6 +98,18 @@
 			</div>
 		</div>
 	</div>
+	
+	<#elseif nothing?? && nothing == true >
+		
+		<div class="alert alert-warning alert-dismissible" role="alert">
+		  	<button type="button" class="close" data-dismiss="alert">
+		  	<span aria-hidden="true">&times;</span>
+		  	<span class="sr-only">Close</span>
+		  	</button>
+		  	<p>请输入身份证或卡号信息！</p>
+		 </div>
+	
+	</#if>
 	
 	<script type="text/javascript">
 		$(document).ready(function() {

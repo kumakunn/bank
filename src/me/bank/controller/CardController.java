@@ -53,7 +53,11 @@ public class CardController extends Controller {
 			setAttr("cardList", cardList);
 
 		} else {
+			
 			setAttr("searchIdentity", "");
+			
+			// 数据库中没有此人信息
+			setAttr("nobody", true);
 		}
 
 		render("index.html");

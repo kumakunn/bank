@@ -154,7 +154,7 @@ function del(url){
 							<input type="hidden" value="${(user.name)!}" name="card.name"/>
 							<input type="hidden" value="${(user.identity)!}" name="card.identity"/>
 							<div class="form-group">
-								<label class="control-label col-md-1" for="card.type">银行卡类型</label>
+								<label class="control-label col-md-2" for="card.type">银行卡类型</label>
 								<div class="col-md-3">
 									<select class="form-control input-sm" name="card.type">
 									<#list cardTypes as type>
@@ -179,8 +179,16 @@ function del(url){
 		</div>
 		
 	<#else>
-		 <#if searchIdentity! == "">
-			无此人信息请您预先录入此人信息<a href="${CONTEXT_PATH}/admin/user/add">进入新增用户界面</a>
+		 <#if nobody?? && nobody == true>
+		 
+		 <div class="alert alert-warning alert-dismissible" role="alert">
+		  	<button type="button" class="close" data-dismiss="alert">
+		  	<span aria-hidden="true">&times;</span>
+		  	<span class="sr-only">Close</span>
+		  	</button>
+		  	<p>无此人信息，请录入该用户信息后重试！</p>
+		 </div>
+			
 		</#if>
 	</#if>
 	

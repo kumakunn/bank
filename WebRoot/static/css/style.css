@@ -62,3 +62,12 @@
 	
 }
 
+
+.welcome {
+	width: 552px;
+	height: 170px;
+	margin: 150px auto;
+	background: url("../image/welcome_bg.png") no-repeat;
+	
+}
+

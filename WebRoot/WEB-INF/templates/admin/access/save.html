@@ -15,38 +15,41 @@
 <script type="text/javascript" src="${CONTEXT_PATH}/static/js/artDialog/artDialog.js??skin=twitter"></script>
 <script type="text/javascript" src="${CONTEXT_PATH}/static/js/common.js"></script>
 <script type="text/javascript">
-function del(url){
-	if(confirm('您确定要删除本柜员信息？')) {
-		
-		$.get(url, function(data) {
-			alert(data.msg);
-			searchForm.submit();
-		});
-	}
- }
- function save(){
-	  
-		     var params=$('input').serialize(); //序列化表单的值
-		     $.ajax({
-		       url:'${CONTEXT_PATH}/admin/access/saveMoney', //后台处理程序
-		       type:'post',         //数据发送方式
-		       dataType:'json',     //接受数据格式
-		       data:params,         //要传递的数据
-		       success:update_page //回传函数(这里是函数名)
-		     });
- }
- 
- function update_page (data) //回传函数实体，参数为XMLhttpRequest.responseText
- {
-	alert(data.msg);
-	searchForm.submit();
 	
- }
+	function del(url){
+		if(confirm('您确定要删除本柜员信息？')) {
+			
+			$.get(url, function(data) {
+				alert(data.msg);
+				searchForm.submit();
+			});
+		}
+	 }
+	
+	 function save(){
+	  
+	     var params=$('input').serialize(); //序列化表单的值
+	     $.ajax({
+	       url:'${CONTEXT_PATH}/admin/access/saveMoney', //后台处理程序
+	       type:'post',         //数据发送方式
+	       dataType:'json',     //接受数据格式
+	       data:params,         //要传递的数据
+	       success:update_page //回传函数(这里是函数名)
+	     });
+	 }
+	 
+	 function update_page (data) {
+		//回传函数实体，参数为XMLhttpRequest.responseText
+		alert(data.msg);
+		searchForm.submit();
+		
+	 }
+	 
 </script>
 </head>
 
 <body>
-	<div class="container">
+	<div class="container-fluid">
 
 		<div class="row">
 			<div class="col-md-12">
