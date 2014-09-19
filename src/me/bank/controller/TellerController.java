@@ -12,9 +12,11 @@ import com.jfinal.upload.UploadFile;
 
 import me.bank.interceptor.TellerInterceptor;
 import me.bank.config.Constants;
+import me.bank.kit.Cn2Spell;
 import me.bank.kit.DateKit;
 import me.bank.kit.UUID;
 import me.bank.kit.UploadKit;
+import me.bank.model.Admin;
 import me.bank.model.Teller;
 import me.bank.validator.SaveTellerValidator;
 import me.bank.kit.ParaKit;
@@ -163,9 +165,30 @@ public class TellerController extends Controller {
 		if (null == teller.getInt("id")) {
 			// 设置注册时间
 			teller.set("time", DateKit.getDateTime());
-
 			teller.set("uuid", UUID.randomUUID());
 			teller.save();
+			
+			
+			//新增柜员登陆账号密码
+				//账号为用户的姓名的拼音密码身份证后六位
+			String name = teller.get("name");
+			Cn2Spell cs = Cn2Spell.getInstance();
+			name = cs.getSpelling(name);
+			Admin admin = new Admin();
+			admin.set("account", name);
+			String password = teller.get("identity").toString();
+			if(password.length()==15){
+				password = password.substring(9,15);
+			}else{
+				password = password.substring(12,18);
+			}
+			admin.set("password", password);
+			//角色代码
+			admin.set("rid", 3);
+			//柜员id
+			admin.set("tid", teller.get("id"));
+			admin.save();
+		
 		} else {
 			teller.update();
 		}

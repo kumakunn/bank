@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>农业银行管理系统</title>
+
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/layout.css" />
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/style.css" />
+
+
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/bootstrap.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/artDialog/artDialog.js??skin=twitter"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/common.js"></script>
+</head>
+
+<body>
+	<div class="container">
+	<form class="form-inline" name="thisForm" id="thisForm" action="${CONTEXT_PATH}/admin/verify/checkCard" method="post" role="form">
+			<div class="row">
+				<div class="col-lg-12">
+
+					<dl class="dl-horizontal">
+						<dt>身份证头像</dt>
+						<dd><img src="${CONTEXT_PATH}${(user.image)!}" onload="resizeImage(this, 100, 100)" /></dd>
+					</dl>
+					<dl class="dl-horizontal">
+						<dt>姓名</dt>
+						<dd>${user.name}</dd>
+					</dl>
+
+					<dl class="dl-horizontal">
+						<dt>身份证</dt>
+						<dd>${user.identity}</dd>
+					</dl>
+
+					<dl class="dl-horizontal">
+						<dt>性别</dt>
+						<dd><#if user.sex = 1>男<#else>女</#if></dd>
+					</dl>
+
+					<dl class="dl-horizontal">
+						<dt>籍贯</dt>
+						<dd>${user.birthplace}</dd>
+					</dl>
+
+					<dl class="dl-horizontal">
+						<dt>出生日期</dt>
+						<dd>${user.birth}</dd>
+					</dl>
+
+					<dl class="dl-horizontal">
+						<dt>民族</dt>
+						<dd>${user.national}</dd>
+					</dl>
+
+					<dl class="dl-horizontal">
+						<dt>家庭住址</dt>
+						<dd>${user.address}</dd>
+					</dl>
+
+					<dl class="dl-horizontal">
+						<dt>电话</dt>
+						<dd>${user.phone}</dd>
+					</dl>
+
+					<dl class="dl-horizontal">
+						<dt>婚姻状况</dt>
+						<dd>${applicationdata.marry}</dd>
+					</dl>
+
+					<dl class="dl-horizontal">
+						<dt>住宅情况</dt>
+						<dd>${applicationdata.hosing}</dd>
+					</dl>
+
+					<dl class="dl-horizontal">
+						<dt>现居住时间</dt>
+						<dd>${applicationdata.nowLiveTime}</dd>
+					</dl>
+
+					<dl class="dl-horizontal">
+						<dt>个人年收入</dt>
+						<dd>${applicationdata.personalIncome}万</dd>
+					</dl>
+
+					<dl class="dl-horizontal">
+						<dt>单位部门</dt>
+						<dd>${applicationdata.company}</dd>
+					</dl>
+
+					<dl class="dl-horizontal">
+						<dt>现单位工作年限</dt>
+						<dd>${applicationdata.companyTime}</dd>
+					</dl>
+
+					<dl class="dl-horizontal">
+						<dt>职业</dt>
+						<dd>${applicationdata.occupation}</dd>
+					</dl>
+
+					<dl class="dl-horizontal">
+						<dt>所属行业</dt>
+						<dd>${applicationdata.occupationType}</dd>
+					</dl>
+
+					<dl class="dl-horizontal">
+						<dt>职称</dt>
+						<dd>${applicationdata.title}</dd>
+					</dl>
+					
+					<dl class="dl-horizontal">
+						<dt>职务</dt>
+						<dd>${applicationdata.position}</dd>
+					</dl>
+					<hr />
+					<input type="hidden" name="result" id="result"/>
+					<input type="hidden" value="${(card.id)!}" name="cardId"/>
+					<div class="form-group">
+						<div class="col-md-offset-1 col-md-9">
+							<button type="button" onclick="checkTheCard(1)" class="btn btn-primary">通过</button>
+							<button type="button" onclick="checkTheCard(2)"  class="btn btn-primary">不通过</button>
+						</div>
+					</div>
+			</div>
+		</form>
+	</div>
+<script type="text/javascript">
+function checkTheCard(obj){
+	if(obj==1){
+		$('#result').val('1');
+	}else if(obj==2){
+		$('#result').val('2');
+	}
+	
+	$.ajax({
+		url : "/admin/verify/checkCard",
+		type:'post',      
+		data : $('#thisForm').serialize(),
+		dataType : "json",
+		error : function(data) {
+			alert(data.msg);
+		},
+		success : function(data) {
+			alert(data.msg);
+		}
+	});
+}
+</script>
+</body>
+</html>

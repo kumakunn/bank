@@ -20,7 +20,17 @@ public class Teller extends Model<Teller> {
 	 * @return
 	 */
 	public Page<Teller> paginate(int pageNumber, int pageSize) {
-		return paginate(pageNumber, pageSize, "select *", "from teller order by id desc");
+		return paginate(pageNumber, pageSize, "select *",
+				"from teller order by id desc");
+	}
+
+	public Teller getTellerByIdentity(String identity) {
+		return dao
+				.findFirst("select * from teller where identity =?", identity);
+	}
+
+	public Teller getTellerByName(String name) {
+		return dao.findFirst("select * from teller where name =?", name);
 	}
 
 	// 获取政治面貌

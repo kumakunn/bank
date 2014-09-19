@@ -1,5 +1,7 @@
 package me.bank.model;
 
+import me.bank.kit.ParaKit;
+
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
@@ -17,4 +19,19 @@ public class Detail extends Model<Detail> {
 				"from detail order by id desc");
 	}
 
+	// 根据identity获取本人姓名
+	public String getIdentity() {
+		String identity = get("identity");
+		if (!ParaKit.isEmpty(identity)) {
+			User user = User.dao.findFirst(
+					"select * from user where identity=?", identity);
+			if (user != null) {
+				return user.get("name");
+			} else {
+				return "--";
+			}
+		}
+		return "--";
+
+	}
 }

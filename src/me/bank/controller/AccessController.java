@@ -1,10 +1,13 @@
 package me.bank.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import me.bank.kit.ParaKit;
@@ -47,6 +50,29 @@ public class AccessController extends Controller {
 		String uuid = getPara("uuid");
 		setAttr("searchUuid", uuid);
 		
+		//关联取款结果result
+		String result = getPara("result");
+		if(!ParaKit.isEmpty(result)){
+			String money = getPara("money");
+			String checkMoney = getPara("checkMoney");
+			/**
+			 * 1取款失败
+			 * 2取款成功
+			 * 3存款失败
+			 * 4存款成功
+			 */
+			if(result.equals("1")){
+				result = "取款失败！";
+			}else if(result.equals("2")){
+				result = "取款成功！";
+			}else if(result.equals("3")){
+				result ="存款失败！";
+			}else{
+				result ="存款成功！";
+			}
+			setAttr("result", result);
+		}
+		
 		//获取借记卡的信息
 		Card card = Card.dao.getCardByUuidJJ(11,uuid);
 		
@@ -86,6 +112,8 @@ public class AccessController extends Controller {
 	 */
 	@Before(GetMoneyValidator.class)
 	public void getMoney(){
+		//取款结果
+		String result = "";
 		String uuid = getPara("uuid");
 		double money = Double.valueOf(getPara("money").toString());
 		int userid = Integer.valueOf(getPara("userid"));
@@ -99,6 +127,8 @@ public class AccessController extends Controller {
 		if(checkMoney<0){
 			setAttr("toBig","超出剩余金额，请改写您的金额！");
 			//renderJson("msg","取款失败！超出余额");
+			
+			result ="1";
 		}else{
 			access.set("amount", BigDecimal.valueOf(checkMoney));
 			access.set("time", DateKit.getDateTime());
@@ -109,18 +139,19 @@ public class AccessController extends Controller {
 			access.update();
 			Card card = Card.dao.getCardByUuid(uuid);
 			//交易明细记录
-			detail.set("uid", userid);
-			detail.set("cid", card.get("id"));
+			detail.set("identity", user.get("identity"));
+			detail.set("uuid", card.get("uuid"));
 			detail.set("time", DateKit.getDateTime());
 			detail.set("type", 0);//代表支出
 			detail.set("amount", BigDecimal.valueOf(money));
 			detail.set("balance", BigDecimal.valueOf(checkMoney));
 			detail.save();
 			//render("get.html");
+			//取款成功提示
+			result = "2";
 		}
-		
-		
-		redirect("search?uuid="+uuid+"&s=get");
+
+		redirect("search?uuid="+uuid+"&s=get"+"&result="+result+"&money="+money+"&checkMoney="+checkMoney);
 	}
 	
 	/**
@@ -129,7 +160,8 @@ public class AccessController extends Controller {
 	
 	@Before(SaveMoneyValidator.class)
 	public void saveMoney(){
-		
+		//存款结果
+		String result = "";
 		String uuid = getPara("uuid");
 		double money = Double.valueOf(getPara("money").toString());
 		int userid = Integer.valueOf(getPara("userid"));
@@ -140,27 +172,31 @@ public class AccessController extends Controller {
 		BigDecimal amount = access.get("amount");
 		//存款后卡上余额
 		double checkMoney =amount.add(BigDecimal.valueOf(money)).doubleValue();
-		
-		
-			access.set("amount", BigDecimal.valueOf(checkMoney));
-			access.set("time", DateKit.getDateTime());
-			HttpSession session =getSession();
-			Admin admin= (Admin)session.getAttribute("admin");
-			int tid = admin.get("tid");
-			access.set("tid",tid);
-			access.update();
-			Card card = Card.dao.getCardByUuid(uuid);
-			//交易明细记录
-			detail.set("uid", userid);
-			detail.set("cid", card.get("id"));
-			detail.set("time", DateKit.getDateTime());
-			detail.set("type", 1);//代表支出
-			detail.set("amount", BigDecimal.valueOf(money));
-			detail.set("balance", BigDecimal.valueOf(checkMoney));
-			detail.save();
+		try{
+				access.set("amount", BigDecimal.valueOf(checkMoney));
+				access.set("time", DateKit.getDateTime());
+				HttpSession session =getSession();
+				Admin admin= (Admin)session.getAttribute("admin");
+				int tid = admin.get("tid");
+				access.set("tid",tid);
+				access.update();
+				Card card = Card.dao.getCardByUuid(uuid);
+				//交易明细记录
+				detail.set("identity", user.get("identity"));
+				detail.set("uuid",uuid);
+				detail.set("time", DateKit.getDateTime());
+				detail.set("type", 1);//代表支出
+				detail.set("amount", BigDecimal.valueOf(money));
+				detail.set("balance", BigDecimal.valueOf(checkMoney));
+				detail.save();
+				result = "4";
+		}catch(Exception e){
+			result="3";
+		}
+
 		
 
-			redirect("search?uuid="+uuid+"&s=save");
+			redirect("search?uuid="+uuid+"&s=save"+"&result="+result+"&money="+money+"&checkMoney="+checkMoney);
 		//renderJson("msg","存款成功！您存入了"+money+",当前余额为"+checkMoney);
 	}
 }

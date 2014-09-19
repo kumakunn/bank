@@ -20,17 +20,24 @@ public class SaveTellerValidator extends Validator {
 		}
 
 		// 是否填写了柜员
-		validateRequiredString("teller.name", "nameMsg", "请输入姓名!");
+		validateRequiredString("teller.name", "nameMsg", "请输入姓名!");	
 		validateRequiredString("teller.national", "nationalMsg", "请输入所属!");
 
 		validateRequired("teller.identity", "identityMsg", "请输入合法的身份证号!");
+		String identity = controller.getPara("teller.identity");
+	
+		Teller teller2 = Teller.dao.getTellerByIdentity(identity);
+		if(teller2 !=null){
+			validateString("teller.identity",100, 101, "identityIsHave", "该身份证已经存在，请认真核对！");
+		}
+		
 		validateRegex("teller.birth", "\\d{4}-\\d{2}-\\d{2}", "birthMsg", "请输入合法的出生日期!");
 		validateString("teller.birthplace", 6, 50, "birthplaceMsg", "请输入6-50字的合法的籍贯");
 		validateString("teller.desc", 10, 500, "descMsg", "请输入20-500之间的描述");
 		validateString("teller.address", 6, 50, "addressMsg", "请输入6-50字的合法的地址");
 		validateRegex("teller.phone", "1[0-9]{10}", "phoneMsg", "请输入合法的手机号!");
 		validateEmail("teller.email", "emailMsg", "请输入合法的email!");
-
+		
 	}
 
 	protected void handleError(Controller controller) {

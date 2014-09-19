@@ -4,6 +4,7 @@ import me.bank.interceptor.SessionInterceptor;
 import me.bank.model.Access;
 import me.bank.model.Admin;
 import me.bank.model.Card;
+import me.bank.model.CreditInfo;
 import me.bank.model.Detail;
 import me.bank.model.Dictionary;
 import me.bank.model.Permission;
@@ -80,7 +81,7 @@ public class CoreConfig extends JFinalConfig {
 		arp.addMapping("card", Card.class);
 		arp.addMapping("detail", Detail.class);
 		arp.addMapping("teller", Teller.class);
-
+		arp.addMapping("credit_info", CreditInfo.class);
 	}
 
 	/**

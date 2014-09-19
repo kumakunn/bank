@@ -6,23 +6,26 @@ import java.util.List;
 import java.util.Map;
 
 import me.bank.config.Constants;
+import me.bank.interceptor.CardInterceptor;
 import me.bank.kit.ParaKit;
-import me.bank.model.Detail;
-import me.bank.model.Teller;
+import me.bank.model.Card;
+import me.bank.model.CreditInfo;
+import me.bank.model.User;
 
+import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 
 /**
  * CardController
  * 
- * 柜员管理
+ * 银行卡管理
  * 
  */
-public class DetailController extends Controller {
+@Before(CardInterceptor.class)
+public class VerifyController extends Controller {
 
 	public void index() {
-		
 		// 判断当前是否是搜索的数据进行的分页
 		// 如果是搜索的数据，则跳转至search方法处理
 		if (!ParaKit.isEmpty(getPara("s"))) {
@@ -38,22 +41,20 @@ public class DetailController extends Controller {
 			page = 1;
 		}
 		// 读取所有的柜员
-		Page<Detail> detailList = Detail.dao.paginate(page, Constants.PAGE_SIZE);
-		setAttr("detailList", detailList);
+		Page<Card> cardList = Card.dao.paginateForStatus("<>", page, Constants.PAGE_SIZE, 11);
+		setAttr("cardList", cardList);
+
 		setAttr("searchUuid", "");
 		setAttr("searchIdentity", "");
 		setAttr("searchPage", Constants.NOT_SEARCH_PAGE);
+
 		render("index.html");
 	}
+
 	/**
-	 * 检索
+	 * 搜索
 	 */
-	
-	public void search(){
-		if(getPara("uuid")!=null && getPara("identity")!=null){
-			setAttr("errorMsg", "只能按一类检索");
-			render("index.html");
-		}
+	public void search() {
 		if (ParaKit.isEmpty(getPara("s"))) {
 
 			// 说明当前请求是搜索数据的post请求，并非搜索的分页请求
@@ -71,8 +72,9 @@ public class DetailController extends Controller {
 		if (page < 1) {
 			page = 1;
 		}
+
 		StringBuilder sb = new StringBuilder();
-		sb.append("from detail where id > 0");
+		sb.append("from card where status =0 and type <> 11");
 
 		HashMap<String, String> queryParams = getSessionAttr(Constants.SEARCH_SESSION_KEY);
 		List<Object> params = new ArrayList<Object>();
@@ -93,20 +95,47 @@ public class DetailController extends Controller {
 				params.add(identity);
 			}
 
-
 			setAttr("searchUuid", uuid);
 			setAttr("searchIdentity", identity);
 			setAttr("searchPage", Constants.SEARCH_PAGE);
-			
+
 		}
-		
-		// 柜员列表
-		Page<Detail> detailList = Detail.dao.paginate(page, Constants.PAGE_SIZE, "select *",
+
+		// 信用卡列表
+		Page<Card> cardList = Card.dao.paginate(page, Constants.PAGE_SIZE, "select *",
 				sb.toString(), params.toArray());
 
-		setAttr("detailList", detailList);
+		setAttr("cardList", cardList);
 
 		render("index.html");
 	}
 
+	public void goCheckCard() {
+		String cardId = getPara("cardId");
+		Card card = Card.dao.findById(cardId);
+		String identity = card.get("identity");
+		User user = User.dao.getUserByIdentity(identity);
+		CreditInfo ad = CreditInfo.dao.getCreditInfoByUserId(Integer.valueOf(user.get("id")
+				.toString()));
+
+		setAttr("user", user);
+		setAttr("applicationdata", ad);// 信用填写信息
+		setAttr("card", card);
+		render("check.html");
+	}
+
+	public void checkCard() {
+		int id = getParaToInt("cardId");
+		Card card = Card.dao.findById(id);
+		int result = getParaToInt("result");
+		System.out.println(result);
+		if (card != null) {
+			card.set("status", result);
+			card.update();
+			renderJson("msg", "审核成功！");
+		} else {
+			renderJson("msg", "审核失败！");
+		}
+
+	}
 }

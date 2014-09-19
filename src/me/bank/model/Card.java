@@ -28,9 +28,11 @@ public class Card extends Model<Card> {
 	 * 根据银行卡号获取银行卡信息（借记卡）默认传值type=11
 	 * 
 	 */
-	public Card getCardByUuidJJ(int type ,String uuid) {
-		return dao.findFirst("select * from card where type=? and  uuid = ?", type,uuid);
+	public Card getCardByUuidJJ(int type, String uuid) {
+		return dao.findFirst("select * from card where type=? and  uuid = ?",
+				type, uuid);
 	}
+
 	/**
 	 * 根据身份证获取该用户所办理的所有卡的信息
 	 * 
@@ -42,31 +44,40 @@ public class Card extends Model<Card> {
 	}
 
 	public Page<Card> paginate(int pageNumber, int pageSize) {
-		return paginate(pageNumber, pageSize, "select *", "from card order by id desc");
+		return paginate(pageNumber, pageSize, "select *",
+				"from card order by id desc");
 	}
+
 	/***
 	 * 获取待审核信用卡信息
+	 * 
+	 * @param flag
+	 *            代表了关系符号
 	 * @param pageNumber
 	 * @param pageSize
 	 * @return
 	 */
-	public Page<Card> paginateForStatus(int pageNumber, int pageSize,int[] status) {
-		return paginate(pageNumber, pageSize, "select *", "from card where status =? order by id desc",status);
+	public Page<Card> paginateForStatus(String flag, int pageNumber,
+			int pageSize, int status) {
+		String sql = "from card where status = 0 and type ";
+		sql = sql + flag;
+		sql = sql + " ? order by id desc";
+		return paginate(pageNumber, pageSize, "select *", sql, status);
 	}
-	
-	//获取卡的类别
+
+	// 获取卡的类别
 	public String getType() {
-		int id  = get("type");
-		if ( id!= 0) {
+		int id = get("type");
+		if (id != 0) {
 			Dictionary dic = Dictionary.dao.findById(id);
-			if(dic!=null){
+			if (dic != null) {
 				return dic.get("name");
-			}else{
+			} else {
 				return "--";
 			}
 		}
 		return "--";
-		
+
 	}
 
 }

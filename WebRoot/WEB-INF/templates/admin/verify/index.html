@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>农业银行管理系统</title>
+
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/layout.css" />
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/style.css" />
+
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/bootstrap.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/artDialog/artDialog.js??skin=twitter"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/artDialog/plugins/iframeTools.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/common.js"></script>
+
+<script type="text/javascript">
+	function check(cardId) {
+		art.dialog.open('${CONTEXT_PATH}/admin/verify/goCheckCard/?cardId='+cardId, {width: 600, height: 400,
+            close: function () {
+				art.dialog.close();
+				thisForm.submit();
+            }
+		}, false);
+	}
+</script>
+
+</head>
+<body>
+
+	<div class="container-fluid">
+
+		<div class="row">
+			<div class="col-md-12">
+
+				<form class="form-inline" name="thisForm" action="${CONTEXT_PATH}/admin/verify/search" method="post" role="form">
+
+					<div class="form-group">
+						<div class="input-group">
+							<div class="input-group-addon">卡号</div>
+							<input class="form-control" type="text" name="uuid" id="uuid" value="${searchUuid!}"
+								placeholder="">
+						</div>
+					</div>
+					&nbsp;&nbsp;
+					<div class="form-group">
+						<div class="input-group">
+							<div class="input-group-addon">身份证</div>
+							<input class="form-control" type="text" name="identity" id="name" value="${searchIdentity!}"
+								placeholder="">
+						</div>
+					</div>
+					&nbsp;&nbsp;
+
+					<input type="submit" class="btn btn-info btn-sm" name="subButton" id="subButton" value="查询" />
+				</form>
+
+			</div>
+		</div>
+		
+		<br/><br/>
+		
+		<div class="row">
+			<div class="col-md-12">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>卡号</th>
+									<th>姓名</th>
+									<th>身份证</th>
+									<th>卡类</th>
+									<th>状态</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody>
+							<#list cardList.list as card>
+								<tr>
+									<td>${card.uuid}</td>
+									<td>${card.name}</td>
+									<td>${card.identity}</td>
+									<td>${card.type}</td>
+									<td><#if card.status==0>待审核 <#else>通过</#if></td>
+									<td align="center">
+										<a href="javascript:void(0)" onclick="check('${card.id}')">审核</a>
+									</td>
+								</tr>
+							</#list>
+							</tbody>
+						</table>
+				<div>
+
+					<ul class="pager pull-left">
+						<li><a href="${CONTEXT_PATH}/admin/verify/?p=1<#if searchPage == 1>&s=1</#if>">首页</a></li>
+						<li><a
+							href="${CONTEXT_PATH}/admin/verify/?p=<#if cardList.pageNumber lte 1>1<#else>${cardList.pageNumber - 1}</#if><#if searchPage == 1>&s=1</#if>">上一页</a></li>
+						<li><a
+							href="${CONTEXT_PATH}/admin/verify/?p=<#if cardList.pageNumber gte cardList.totalPage>${cardList.totalPage}<#else>${cardList.pageNumber + 1}</#if><#if searchPage == 1>&s=1</#if>">下一页</a></li>
+						<li><a
+							href="${CONTEXT_PATH}/admin/verify/?p=${cardList.totalPage}<#if searchPage == 1>&s=1</#if>">末页</a></li>
+					</ul>
+
+
+					<div class="pull-right">
+						<p class="help-block">当前第 ${cardList.pageNumber} 页，共计 ${cardList.totalPage} 页，每页
+							${cardList.pageSize} 条数据</p>
+					</div>
+
+					<div class="clearfix"></div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	
+</body>
+</html>

@@ -46,7 +46,7 @@ function del(url){
 </head>
 
 <body>
-	<div class=container-fluid>
+	<div class="container">
 
 		<div class="row">
 			<div class="col-md-12">
@@ -133,17 +133,14 @@ function del(url){
 							</div>
 						</div>
 						<hr></hr>
-						
-						
-							<div class="container">
-
-
+<div class="container">
+		<div class="row">
+		<p class="help-block col-md-4 required">${result!}</p>
+		</div>
 		<div class="row">
 			<div class="col-md-12">
-
 				<form class="form-horizontal" action="${CONTEXT_PATH}/admin/access/getMoney" method="post"
 					 role="form">
-
 					<input type="hidden" value="${(card.uuid)!}" name="uuid" />
 					<input type="hidden" value="${(user.id)!}" name="userid"/>
 					<div class="form-group <#if moneyMsg??>has-error</#if> ">
@@ -153,9 +150,7 @@ function del(url){
 							<input type="text" class="form-control input-sm" name="money" value="${(money)!}" />
 						</div>
 						<p class="help-block col-md-4 required">（最多可取999999999）${moneyMsg!}${toBig!}</p>
-
 					</div>
-					
 					<div class="form-group <#if passwordMsg??>has-error</#if>">
 
 						<label class="control-label col-md-1" for="password">取款密码</label>
@@ -167,12 +162,10 @@ function del(url){
 					</div>
 					
 					<hr />
-					
-					
 					<div class="form-group ">
 					
 						<div class="col-md-offset-1 col-md-9">
-							<button type="submit" id="subBtn"  class="btn btn-primary " <#if (access.amount)!<=0>disabled="disabled"</#if>>提 交</button>
+							<button type="submit" id="subBtn"  class="btn btn-primary " <#if lockMsg?? || (access.amount)!<=0>disabled="disabled"</#if>>提 交</button>
 							<button type="reset" class="btn btn-danger">重 置</button>
 						</div>
 					</div>
@@ -183,10 +176,8 @@ function del(url){
 			</div>
 		</div>
 	</div>
-						
-						
-		</#if>
-	</div>
+	</#if>
+</div>
 
 </body>
 </html>
