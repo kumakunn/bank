@@ -2,20 +2,19 @@ package me.bank.controller;
 
 import java.math.BigDecimal;
 
-import javax.servlet.http.HttpSession;
-
 import me.bank.kit.DateKit;
 import me.bank.kit.ParaKit;
-import me.bank.model.Access;
+import me.bank.kit.UUID;
 import me.bank.model.Admin;
 import me.bank.model.Card;
 import me.bank.model.Detail;
 import me.bank.model.User;
-import me.bank.validator.GetMoneyValidator;
 import me.bank.validator.SaveMoneyValidator;
+import me.bank.validator.TakeOutValidator;
 
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
+import com.jfinal.plugin.activerecord.tx.Tx;
 
 /**
  * AccessController
@@ -24,6 +23,12 @@ import com.jfinal.core.Controller;
  * 
  */
 public class AccessController extends Controller {
+
+	private static final int SUCCESS = 0;
+	private static final int ERROR_PASSWORD_ONCE = 1;
+	private static final int ERROR_PASSWORD_TWICE = 2;
+	private static final int CARD_LOCKED = 3;
+	private static final int BALANCE_NOT_ENOUGH = 4;
 
 	// 跳转取款
 	public void get() {
@@ -42,59 +47,25 @@ public class AccessController extends Controller {
 		String uuid = getPara("uuid");
 		setAttr("searchUuid", uuid);
 
-		// 关联取款结果result
-		String result = getPara("result");
-
-		if (!ParaKit.isEmpty(result)) {
-
-			// String money = getPara("money");
-			// String checkMoney = getPara("checkMoney");
-
-			/**
-			 * 1取款失败 2取款成功 3存款失败 4存款成功
-			 */
-			if (result.equals("1")) {
-				result = "取款失败！";
-			} else if (result.equals("2")) {
-				result = "取款成功！";
-			} else if (result.equals("3")) {
-				result = "存款失败！";
-			} else {
-				result = "存款成功！";
-			}
-			setAttr("result", result);
-		}
-
 		// 获取借记卡的信息
-		Card card = Card.dao.getCardByUuidJJ(11, uuid);
+		Card card = Card.dao.getCardByUuid(uuid);
 
-		// 取款
 		if (card != null) {
-			User user = User.dao.getUserByIdentity(card.get("identity").toString());
 
-			// 获取卡号对应的access对象如果没有创建一个
-			Access access = Access.dao.getAccessByUuid(uuid);
-			if (access == null) {
-				access = new Access();
-				access.set("uuid", uuid);
-				access.set("amount", 0.000);
-				access.set("time", DateKit.getDateTime());
-				HttpSession session = getSession();
-				Admin admin = (Admin) session.getAttribute("admin");
-				int tid = admin.get("tid");
-				access.set("tid", tid);
-				access.save();
-			}
+			User user = User.dao.getUserByIdentity(card.get("identity").toString());
 
 			setAttr("user", user);
 			setAttr("card", card);
-			setAttr("access", access);
 
-		} else {
-			// setAttr("searchUuid", "");
 		}
 
+		// 取钱
 		if (s.equals("get")) {
+
+			String token = UUID.randomUUID();
+			getSession().setAttribute(token, uuid);
+			setAttr("token", token);
+
 			render("get.html");
 		} else {
 			// 存款
@@ -103,96 +74,228 @@ public class AccessController extends Controller {
 	}
 
 	/**
-	 * 取款
+	 * 密码验证通过后，进入取钱的环节
 	 */
-	@Before(GetMoneyValidator.class)
-	public void getMoney() {
-		// 取款结果
-		String result = "";
-		String uuid = getPara("uuid");
-		double money = Double.valueOf(getPara("money").toString());
-		int userid = Integer.valueOf(getPara("userid"));
-		Access access = Access.dao.getAccessByUuid(uuid);
-		Detail detail = new Detail();
-		User user = User.dao.findById(userid);
+	@Before(Tx.class)
+	public void inputPwd() {
 
-		BigDecimal amount = access.get("amount");
-		// 支出后卡上余额
-		double checkMoney = amount.subtract(BigDecimal.valueOf(money)).doubleValue();
-		if (checkMoney < 0) {
-			setAttr("toBig", "超出剩余金额，请改写您的金额！");
-			// renderJson("msg","取款失败！超出余额");
+		String token = getPara("token");
+		String password = getPara("password");
 
-			result = "1";
-		} else {
-			access.set("amount", BigDecimal.valueOf(checkMoney));
-			access.set("time", DateKit.getDateTime());
-			HttpSession session = getSession();
-			Admin admin = (Admin) session.getAttribute("admin");
-			int tid = admin.get("tid");
-			access.set("tid", tid);
-			access.update();
-			Card card = Card.dao.getCardByUuid(uuid);
-			// 交易明细记录
-			detail.set("identity", user.get("identity"));
-			detail.set("uuid", card.get("uuid"));
-			detail.set("time", DateKit.getDateTime());
-			detail.set("type", 0);// 代表支出
-			detail.set("amount", BigDecimal.valueOf(money));
-			detail.set("balance", BigDecimal.valueOf(checkMoney));
-			detail.save();
-			// render("get.html");
-			// 取款成功提示
-			result = "2";
+		String uuid = getSessionAttr(token);
+
+		System.out.println("inputPwd -> token = " + token);
+		System.out.println("inputPwd -> uuid = " + uuid);
+
+		if (ParaKit.isEmpty(uuid)) {
+			setAttr("status", "");
+			renderJson();
+			return;
 		}
 
-		redirect("search?uuid=" + uuid + "&s=get" + "&result=" + result + "&money=" + money
-				+ "&checkMoney=" + checkMoney);
+		Card card = Card.dao.getCardByUuid(uuid);
+
+		if (card == null || card.getInt("status") == 2) {
+
+			setSessionAttr(token + "_status", CARD_LOCKED);
+
+			setAttr("status", "");
+			renderJson();
+			return;
+
+		}
+
+		if (!ParaKit.isEmpty(password) && password.equals(card.get("password"))) {
+
+			String moneyStr = getSessionAttr(token + "_money");
+			double money = Double.parseDouble(moneyStr);
+
+			// 密码输入正确
+			BigDecimal balance = card.get("balance");
+
+			System.out.println("before balance: " + balance.doubleValue());
+
+			// 存款后卡上余额
+			balance = balance.subtract(BigDecimal.valueOf(money));
+
+			if (balance.doubleValue() < 0) {
+				setSessionAttr(token + "_status", BALANCE_NOT_ENOUGH);
+				renderJson();
+				return;
+			}
+
+			System.out.println("after balance: " + balance.doubleValue());
+
+			card.set("balance", balance.doubleValue());
+			card.update();
+
+			// 交易明细记录
+			Detail detail = new Detail();
+			detail.set("identity", card.get("identity"));
+			detail.set("uuid", uuid);
+			detail.set("time", DateKit.getDateTime());
+
+			// 0: 支出, 1: 存入
+			detail.set("type", 1);
+			detail.set("amount", BigDecimal.valueOf(money));
+			detail.set("balance", balance.doubleValue());
+
+			Admin admin = getSessionAttr("admin");
+
+			if (admin.getInt("rid") == 3) {
+				int tid = admin.get("tid");
+				detail.set("tid", tid);
+			}
+
+			if (detail.save()) {
+				setSessionAttr(token + "_status", SUCCESS);
+			}
+
+		} else {
+
+			Integer errorCount = getSessionAttr(token + "_status");
+
+			System.out.println("errorCount = " + errorCount);
+
+			int count = 0;
+			if (errorCount == null) {
+				setSessionAttr(token + "_status", ERROR_PASSWORD_ONCE);
+			} else {
+				count = errorCount;
+				count++;
+			}
+
+			System.out.println("getSessionAttr = " + getSessionAttr(token + "_status"));
+
+			if (count == 2) {
+				setSessionAttr(token + "_status", ERROR_PASSWORD_TWICE);
+			} else if (count == 3) {
+				setSessionAttr(token + "_status", CARD_LOCKED);
+
+				// 锁卡
+				card.set("status", 2);
+				card.update();
+
+			}
+
+		}
+
+		setAttr("status", "");
+		renderJson();
+
+	}
+
+	/**
+	 * 检测用户是否已经输入了密码
+	 */
+	public void waitPwd() {
+
+		String token = getPara("token");
+		String uuid = getSessionAttr(token);
+
+		System.out.println("waitPwd -> token = " + token);
+		System.out.println("waitPwd -> status = " + getSessionAttr(token + "_status"));
+
+		if (!ParaKit.isEmpty(uuid)) {
+			setAttr("status", getSessionAttr(token + "_status"));
+		}
+
+		renderJson();
+
+	}
+
+	/**
+	 * 显示输入密码的页面
+	 */
+	public void showPwdPage() {
+
+		String token = getPara("token");
+
+		setAttr("token", token);
+
+		render("pwd.html");
+
+	}
+
+	/**
+	 * 取钱
+	 */
+	@Before(TakeOutValidator.class)
+	public void takeOut() {
+
+		String token = getPara("token");
+		String uuid = getPara("uuid");
+		String money = getPara("money");
+
+		if (!ParaKit.isEmpty(uuid) && uuid.equals(getSessionAttr(token))) {
+			getSession().setAttribute(uuid + "_money", money);
+			setAttr("status", "success");
+			renderJson();
+			return;
+		}
+
+		renderNull();
+
 	}
 
 	/**
 	 * 存款
 	 */
-	@Before(SaveMoneyValidator.class)
+	@Before({ SaveMoneyValidator.class, Tx.class })
 	public void saveMoney() {
-		// 存款结果
-		String result = "";
+
 		String uuid = getPara("uuid");
+
+		setAttr("searchUuid", uuid);
+
 		double money = Double.valueOf(getPara("money").toString());
-		int userid = Integer.valueOf(getPara("userid"));
-		Access access = Access.dao.getAccessByUuid(uuid);
-		Detail detail = new Detail();
-		User user = User.dao.findById(userid);
 
-		BigDecimal amount = access.get("amount");
+		System.out.println("money: " + money);
+
+		int uid = Integer.valueOf(getPara("uid"));
+
+		Card card = Card.dao.getCardByUuid(uuid);
+
+		User user = User.dao.findById(uid);
+
+		BigDecimal balance = card.get("balance");
+
+		System.out.println("before balance: " + balance.doubleValue());
+
 		// 存款后卡上余额
-		double checkMoney = amount.add(BigDecimal.valueOf(money)).doubleValue();
-		try {
-			access.set("amount", BigDecimal.valueOf(checkMoney));
-			access.set("time", DateKit.getDateTime());
-			HttpSession session = getSession();
-			Admin admin = (Admin) session.getAttribute("admin");
+		balance = balance.add(BigDecimal.valueOf(money));
+		System.out.println("after balance: " + balance.doubleValue());
+
+		card.set("balance", balance.doubleValue());
+		card.update();
+
+		// 交易明细记录
+		Detail detail = new Detail();
+		detail.set("identity", user.get("identity"));
+		detail.set("uuid", uuid);
+		detail.set("time", DateKit.getDateTime());
+
+		// 0: 支出, 1: 存入
+		detail.set("type", 1);
+		detail.set("amount", BigDecimal.valueOf(money));
+		detail.set("balance", balance.doubleValue());
+
+		Admin admin = getSessionAttr("admin");
+
+		if (admin.getInt("rid") == 3) {
 			int tid = admin.get("tid");
-			access.set("tid", tid);
-			access.update();
-
-			// Card card = Card.dao.getCardByUuid(uuid);
-
-			// 交易明细记录
-			detail.set("identity", user.get("identity"));
-			detail.set("uuid", uuid);
-			detail.set("time", DateKit.getDateTime());
-			detail.set("type", 1);// 代表支出
-			detail.set("amount", BigDecimal.valueOf(money));
-			detail.set("balance", BigDecimal.valueOf(checkMoney));
-			detail.save();
-			result = "4";
-		} catch (Exception e) {
-			result = "3";
+			detail.set("tid", tid);
 		}
 
-		redirect("search?uuid=" + uuid + "&s=save" + "&result=" + result + "&money=" + money
-				+ "&checkMoney=" + checkMoney);
-		// renderJson("msg","存款成功！您存入了"+money+",当前余额为"+checkMoney);
+		boolean result = detail.save();
+
+		setAttr("user", user);
+		setAttr("card", card);
+
+		setAttr("detail", detail);
+		setAttr("result", result);
+
+		render("save.html");
+
 	}
 }

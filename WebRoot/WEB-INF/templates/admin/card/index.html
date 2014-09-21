@@ -15,15 +15,27 @@
 <script type="text/javascript" src="${CONTEXT_PATH}/static/js/artDialog/artDialog.js??skin=twitter"></script>
 <script type="text/javascript" src="${CONTEXT_PATH}/static/js/common.js"></script>
 <script type="text/javascript">
-function del(url){
-	if(confirm('您确定要删除本柜员信息？')) {
-		
+	
+	function del(url){
+		if(confirm('确定要删除卡片信息？')) {
+			
+			$.get(url, function(data) {
+				alert(data.msg);
+				searchForm.submit();
+			});
+		}
+	 }
+	
+	function unlock(url){
 		$.get(url, function(data) {
-			alert(data.msg);
-			searchForm.submit();
+			
+			if(data.status == "success") {
+				searchForm.submit();
+				$('#myTab a[href="#card"]').tab('show');
+			}
+			
 		});
 	}
- }
 </script>
 </head>
 
@@ -136,9 +148,21 @@ function del(url){
 									<td>${user.name}</td>
 									<td>${user.identity}</td>
 									<td>${card.type}</td>
-									<td><#if card.status==0>待审核 <#else>通过</#if></td>
+									<td>
+									<#if card.status == 0>
+									<span class="label label-info">待审核</span>
+									<#elseif card.status == 1>
+									<span class="label label-success">通过</span>
+									<#elseif card.status == 2>
+									<span class="label label-danger">锁定</span>
+									</#if>
+									</td>
 									<td align="center">
-										<a href="javascript:void(0)" onclick="del('/admin/card/delete/${card.id}')">删除</a>
+										<#if card.status == 2>
+										<a href="javascript:void(0)" onclick="unlock('${CONTEXT_PATH}/admin/card/unlock/${card.id}')">解锁</a>
+										&nbsp;&nbsp;
+										</#if>
+										<a href="javascript:void(0)" onclick="del('${CONTEXT_PATH}/admin/card/delete/${card.id}')">删除</a>
 									</td>
 								</tr>
 							</#list>

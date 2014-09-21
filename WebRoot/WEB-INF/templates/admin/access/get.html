@@ -14,38 +14,6 @@
 <script type="text/javascript" src="${CONTEXT_PATH}/static/js/bootstrap.js"></script>
 <script type="text/javascript" src="${CONTEXT_PATH}/static/js/artDialog/artDialog.js??skin=twitter"></script>
 <script type="text/javascript" src="${CONTEXT_PATH}/static/js/common.js"></script>
-<script type="text/javascript">
-	
-	function del(url){
-		if(confirm('您确定要删除本柜员信息？')) {
-			
-			$.get(url, function(data) {
-				alert(data.msg);
-				searchForm.submit();
-			});
-		}
-	 }
-	 
-	 function save(){
-	  
-	     var params=$('input').serialize(); //序列化表单的值
-	     $.ajax({
-	       url:'${CONTEXT_PATH}/admin/access/getMoney', //后台处理程序
-	       type:'post',         //数据发送方式
-	       dataType:'json',     //接受数据格式
-	       data:params,         //要传递的数据
-	       success:update_page //回传函数(这里是函数名)
-	     });
-	 }
-	 
-	 function update_page (data) {
-		//回传函数实体，参数为XMLhttpRequest.responseText
-		alert(data.msg);
-		searchForm.submit();
-		
-	 }
-	 
-</script>
 </head>
 
 <body>
@@ -53,9 +21,7 @@
 
 		<div class="row">
 			<div class="col-md-12">
-
 				<form class="form-inline" name="searchForm" action="${CONTEXT_PATH}/admin/access/search/?s=get" method="post" role="form">
-
 					<div class="form-group">
 						<div class="input-group">
 							<div class="input-group-addon">银行卡号</div>
@@ -63,124 +29,201 @@
 								placeholder="">
 						</div>
 					</div>
-
 					<input type="submit" class="btn btn-info" value="查询" />
 				</form>
-
 			</div>
 		</div>
 
 		<br /> <br /> 
 	
 	<#if user?? >	
-							<div class="row">
-							<div class="col-lg-12">
-
-								<dl class="dl-horizontal">
-									<dt>身份证头像</dt>
-									<dd><img src="${CONTEXT_PATH}${(user.image)!}" onload="resizeImage(this, 100, 100)" /></dd>
-								</dl>
-								<dl class="dl-horizontal">
-									<dt>姓名</dt>
-									<dd>${(user.name)!}</dd>
-								</dl>
-
-								<dl class="dl-horizontal">
-									<dt>身份证</dt>
-									<dd>${(user.identity)!}</dd>
-								</dl>
-
-								<dl class="dl-horizontal">
-								
-									<dt>性别${(user.sex)!}</dt>
-									<dd><#if (user.sex)! == 1>男<#else>女</#if></dd>
-								</dl>
-
-								<dl class="dl-horizontal">
-									<dt>籍贯</dt>
-									<dd>${(user.birthplace)!}</dd>
-								</dl>
-
-								<dl class="dl-horizontal">
-									<dt>出生日期</dt>
-									<dd>${(user.birth)!}</dd>
-								</dl>
-
-								<dl class="dl-horizontal">
-									<dt>民族</dt>
-									<dd>${(user.national)!}</dd>
-								</dl>
-
-								<dl class="dl-horizontal">
-									<dt>家庭住址</dt>
-									<dd>${(user.address)!}</dd>
-								</dl>
-
-								<dl class="dl-horizontal">
-									<dt>电话</dt>
-									<dd>${(user.phone)!}</dd>
-								</dl>
-								<dl class="dl-horizontal">
-									<dt>卡号</dt>
-									<dd>${(card.uuid)!}</dd>
-								</dl>
-								<dl class="dl-horizontal">
-									<dt>持卡类型</dt>
-									<dd>${(card.type)!}</dd>
-								</dl>
-								<dl class="dl-horizontal">
-									<dt>余额</dt>
-									<dd>${(access.amount)!}</dd>
-								</dl>
-									
-							</div>
-						</div>
-						<hr></hr>
-<div class="container">
-		<div class="row">
-		<p class="help-block col-md-4 required">${result!}</p>
-		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<form class="form-horizontal" action="${CONTEXT_PATH}/admin/access/getMoney" method="post"
+				<form name="takeForm" class="form-horizontal" action="${CONTEXT_PATH}/admin/access/takeOut" method="post"
 					 role="form">
-					<input type="hidden" value="${(card.uuid)!}" name="uuid" />
-					<input type="hidden" value="${(user.id)!}" name="userid"/>
-					<div class="form-group <#if moneyMsg??>has-error</#if> ">
-
-						<label class="control-label col-md-1" for="money">取款金额</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control input-sm" name="money" value="${(money)!}" />
-						</div>
-						<p class="help-block col-md-4 required">（最多可取999999999）${moneyMsg!}${toBig!}</p>
-					</div>
-					<div class="form-group <#if passwordMsg??>has-error</#if>">
-
-						<label class="control-label col-md-1" for="password">取款密码</label>
-						<div class="col-md-2">
-							<input type="password" class="form-control input-sm" name="password"
-								value="" />
-						</div>
-						<p class="help-block col-md-2 required">（必填）${passwordMsg!}</p>
+					 
+					<input type="hidden" value="${token!}" id="token" name="token" />
+					<input type="hidden" value="${(card.uuid)!}" id="uuid" name="uuid" />
+					<input type="hidden" value="${(user.id)!}" name="uid" />
+					
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>卡号</th>
+								<th>姓名</th>
+								<th>身份证</th>
+								<th>卡上余额</th>
+								<th width="240">取款金额</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>${(card.uuid)!}</td>
+								<td>${(user.name)!}</td>
+								<td>${(user.identity)!}</td>
+								<td>${(card.balance)!}</td>
+								<td>
+									<div class="input-group input-group-sm">
+									  	<span class="input-group-addon">￥</span>
+									  	<input type="text" class="form-control" id="money" name="money" />
+									</div>
+								</td>
+								<td>
+									<#if card.status == 2>
+									<span class="label label-danger">卡被锁定</span>
+									<#else>
+									<a href="javascript:void()" class="btn btn-primary btn-sm" onclick="show()">确定</a>
+									</#if>
+								
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<#if moneyMsg??>
+					
+					<div class="alert alert-warning alert-dismissible" role="alert">
+					  	<button type="button" class="close" data-dismiss="alert">
+					  	<span aria-hidden="true">&times;</span>
+					  	<span class="sr-only">Close</span>
+					  	</button>
+					  	<p>${moneyMsg!}</p>
 					</div>
 					
-					<hr />
-					<div class="form-group ">
+					</#if>
 					
-						<div class="col-md-offset-1 col-md-9">
-							<button type="submit" id="subBtn"  class="btn btn-primary " <#if lockMsg?? || (access.amount)!<=0>disabled="disabled"</#if>>提 交</button>
-							<button type="reset" class="btn btn-danger">重 置</button>
-						</div>
-					</div>
-					<#if (access.amount)!<=0><p class="help-block col-md-2 required">余额不足不允许取款</p></#if>
-					<p class="help-block col-md-2 required">${lockMsg!}</p>
 				</form>
+
+				<div class="wait-password alert alert-warning" style="display:none;" role="alert">
+					
+					<strong>等待用户输入密码...</strong>
+
+				</div>
+
+				<#if detail??>
+					
+				<div class="panel panel-success">
+				
+			        <div class="panel-heading">交易详情</div>
+					<div class="panel-body">
+					    
+					    <div class="row">
+							<div class="col-md-12">
+								<dl class="dl-horizontal">
+									<dt>卡号</dt>
+									<dd>${detail.uuid}</dd>
+								</dl>
+								<dl class="dl-horizontal">
+									<dt>交易时间</dt>
+									<dd>${detail.time}</dd>
+								</dl>
+								<dl class="dl-horizontal">
+									<dt>交易类型</dt>
+									<dd><#if detail.type == 0><span class="label label-danger">支出</span><#else><span class="label label-success">存入</span></#if></dd>
+								</dl>
+								<dl class="dl-horizontal">
+									<dt>交易金额</dt>
+									<dd><strong>${detail.amount}</strong></dd>
+								</dl>
+								<dl class="dl-horizontal">
+									<dt>卡内余额</dt>
+									<dd><strong>${detail.balance}</strong></dd>
+								</dl>
+							</div>
+						</div>
+					</div>
+					
+					<#if result??>
+					<div class="panel-footer">
+						 <#if result == true>
+						 <span class="label label-success">交易成功</span>
+						 <#else>
+						 <span class="label label-danger">交易失败</span>
+						 </#if>
+					</div>
+					</#if>
+					
+				</div>
+					
+				</#if>
 
 			</div>
 		</div>
 	</div>
+	
 	</#if>
+	
 </div>
+
+<script type="text/javascript">
+	
+	// 等待用户输入密码
+	function show() {
+		
+		var value = "token=" + $('#token').val();
+		value += "&uuid=" + $('#uuid').val();
+		value += "&money=" + $('#money').val();
+		
+		$.ajax({
+    		url: "${CONTEXT_PATH}/admin/access/takeOut",
+    		data: value,
+			success: function(data) {
+				
+				$('.wait-password').css('display', 'block');
+				
+				if(data.status == "success") {
+					
+					var token = $('#token').val();
+					
+					openWin(token);
+					
+					var result = window.setInterval(function() {
+						
+						$.ajax({
+				    		url: "${CONTEXT_PATH}/admin/access/waitPwd",
+				    		data: 'token=' + token,
+							success: function(data) {
+								
+								if(data.status == 0) {
+									window.clearInterval(result);
+									var id = data.id;
+									$('form[name="searchForm"]').submit();
+								} else if(data.status == 1) {
+									$('.wait-password').find('strong').text('密码输入错误，还有两次机会！');
+								} else if(data.status == 2) {
+									$('.wait-password').find('strong').text('密码输入错误，还有一次机会！');
+								} else if(data.status == 3) {
+									$('.wait-password').find('strong').text('密码输入错误，卡已被锁定，请解锁后操作！');
+									window.clearInterval(result);
+								} else if(data.status == 4) {
+									$('.wait-password').find('strong').text('卡内余额不足！');
+									window.clearInterval(result);
+								} else if(data.status == 5) {
+									$('.wait-password').find('strong').text('非法请求！');
+									window.clearInterval(result);
+								}
+				    		}
+				    	});
+						
+					}, 2000);
+					
+				} else if(data.status == "error"){
+					
+					$('.wait-password').find('strong').text(data.msg);
+				}
+    		}
+    	});
+
+		
+			
+	}
+	
+	function openWin(token) {
+		window.open('${CONTEXT_PATH}/admin/access/showPwdPage/?token=' + token,'newwindow','height=300,width=400,top=0,left=0,toolbar=no,menubar=no,scrollbars=no,resizable=no, location=no,status=no');
+	}
+	
+</script>
 
 </body>
 </html>

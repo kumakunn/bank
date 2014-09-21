@@ -49,124 +49,131 @@
 </head>
 
 <body>
-	<div class="container-fluid">
 
+	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-12">
-
 				<form class="form-inline" name="searchForm" action="${CONTEXT_PATH}/admin/access/search/?s=save" method="post" role="form">
 
 					<div class="form-group">
 						<div class="input-group">
 							<div class="input-group-addon">银行卡号</div>
 							<input class="form-control" type="text" name="uuid" value="${searchUuid!}"
-								placeholder="">
+								placeholder="银行卡号">
 						</div>
 					</div>
-
-					<input type="submit" class="btn btn-info" value="查询" />
+					&nbsp;&nbsp;
+					<input type="submit" class="btn btn-info btn-sm" value="查询" />
+					&nbsp;&nbsp;
+					<p class="help-block required">${errorMsg!}</p>
 				</form>
-
 			</div>
 		</div>
 
 		<br /> <br /> 
 	
 	<#if user?? >	
-							<div class="row">
-							<div class="col-lg-12">
-
-								<dl class="dl-horizontal">
-									<dt>身份证头像</dt>
-									<dd><img src="${CONTEXT_PATH}${(user.image)!}" onload="resizeImage(this, 100, 100)" /></dd>
-								</dl>
-								<dl class="dl-horizontal">
-									<dt>姓名</dt>
-									<dd>${(user.name)!}</dd>
-								</dl>
-
-								<dl class="dl-horizontal">
-									<dt>身份证</dt>
-									<dd>${(user.identity)!}</dd>
-								</dl>
-
-								<dl class="dl-horizontal">
-								
-									<dt>性别${(user.sex)!}</dt>
-									<dd><#if (user.sex)! == 1>男<#else>女</#if></dd>
-								</dl>
-
-								<dl class="dl-horizontal">
-									<dt>籍贯</dt>
-									<dd>${(user.birthplace)!}</dd>
-								</dl>
-
-								<dl class="dl-horizontal">
-									<dt>出生日期</dt>
-									<dd>${(user.birth)!}</dd>
-								</dl>
-
-								<dl class="dl-horizontal">
-									<dt>民族</dt>
-									<dd>${(user.national)!}</dd>
-								</dl>
-
-								<dl class="dl-horizontal">
-									<dt>家庭住址</dt>
-									<dd>${(user.address)!}</dd>
-								</dl>
-
-								<dl class="dl-horizontal">
-									<dt>电话</dt>
-									<dd>${(user.phone)!}</dd>
-								</dl>
-								<dl class="dl-horizontal">
-									<dt>卡号</dt>
-									<dd>${(card.uuid)!}</dd>
-								</dl>
-								<dl class="dl-horizontal">
-									<dt>持卡类型</dt>
-									<dd>${(card.type)!}</dd>
-								</dl>
-								<dl class="dl-horizontal">
-									<dt>余额</dt>
-									<dd>${(access.amount)!}</dd>
-								</dl>
-									
-							</div>
-						</div>
-						<hr></hr>
-<div class="container">
-		<div class="row">
-				<p class="help-block col-md-4 required">${result!}</p>
-		</div>
+				
 		<div class="row">
 			<div class="col-md-12">
 				<form class="form-horizontal" action="${CONTEXT_PATH}/admin/access/saveMoney" method="post"
 					 role="form">
+					 
 					<input type="hidden" value="${(card.uuid)!}" name="uuid" />
-					<input type="hidden" value="${(user.id)!}" name="userid"/>
-					<div class="form-group <#if moneyMsg??>has-error</#if> ">
-
-						<label class="control-label col-md-1" for="money">存款金额</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control input-sm" name="money" value="${(money)!}" />
-						</div>
-						<p class="help-block col-md-4 required">（最多可存取999999999）${moneyMsg!}</p>
-					</div>
-					<hr />
-					<div class="form-group ">
+					<input type="hidden" value="${(user.id)!}" name="uid"/>
 					
-						<div class="col-md-offset-1 col-md-9">
-							<button type="submit" id="subBtn"  class="btn btn-primary ">提 交</button>
-							<button type="reset" class="btn btn-danger">重 置</button>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>卡号</th>
+								<th>姓名</th>
+								<th>身份证</th>
+								<th>卡上余额</th>
+								<th width="240">存入金额</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>${(card.uuid)!}</td>
+								<td>${(user.name)!}</td>
+								<td>${(user.identity)!}</td>
+								<td>${(card.balance)!}</td>
+								<td>
+									<div class="input-group input-group-sm">
+									  	<span class="input-group-addon">￥</span>
+									  	<input type="text" class="form-control" name="money" />
+									</div>
+								</td>
+								<td><button type="submit"  class="btn btn-primary btn-sm">确定</button></td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<#if moneyMsg??>
+					
+					<div class="alert alert-warning alert-dismissible" role="alert">
+					  	<button type="button" class="close" data-dismiss="alert">
+					  	<span aria-hidden="true">&times;</span>
+					  	<span class="sr-only">Close</span>
+					  	</button>
+					  	<p>${moneyMsg!}</p>
+					 </div>
+					
+					</#if>
+					
+					<#if detail??>
+					
+						<div class="panel panel-success">
+						
+					        <div class="panel-heading">交易详情</div>
+							<div class="panel-body">
+							    
+							    <div class="row">
+									<div class="col-md-12">
+										<dl class="dl-horizontal">
+											<dt>卡号</dt>
+											<dd>${detail.uuid}</dd>
+										</dl>
+										<dl class="dl-horizontal">
+											<dt>交易时间</dt>
+											<dd>${detail.time}</dd>
+										</dl>
+										<dl class="dl-horizontal">
+											<dt>交易类型</dt>
+											<dd><#if detail.type == 0><span class="label label-danger">支出</span><#else><span class="label label-success">存入</span></#if></dd>
+										</dl>
+										<dl class="dl-horizontal">
+											<dt>交易金额</dt>
+											<dd><strong>${detail.amount}</strong></dd>
+										</dl>
+										<dl class="dl-horizontal">
+											<dt>卡内余额</dt>
+											<dd><strong>${detail.balance}</strong></dd>
+										</dl>
+									</div>
+								</div>
+							</div>
+							
+							<#if result??>
+							<div class="panel-footer">
+								 <#if result == true>
+								 <span class="label label-success">交易成功</span>
+								 <#else>
+								 <span class="label label-danger">交易失败</span>
+								 </#if>
+							</div>
+							</#if>
+							
 						</div>
-					</div>
+						
+					</#if>
+							 
 				</form>
 
 			</div>
 		</div>
-	</div>
+
 	</#if>
 </div>
 

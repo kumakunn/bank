@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>农业银行管理系统</title>
+
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/layout.css" />
+<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/style.css" />
+
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/bootstrap.js"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/artDialog/artDialog.js??skin=twitter"></script>
+<script type="text/javascript" src="${CONTEXT_PATH}/static/js/common.js"></script>
+
+</head>
+
+<body>
+	<div class="container-fluid">
+
+		<div class="row">
+			<div class="col-md-12">
+
+				<form class="form-inline" name="searchForm" action="${CONTEXT_PATH}/admin/access/inputPwd"
+					method="post" role="form">
+					<input type="hidden" id="token" name="token" value="${token!}"/>
+					<div class="form-group">
+						<div class="input-group">
+							<div class="input-group-addon">密码</div>
+							<input class="form-control" type="text" id="password" name="password" placeholder="请输入取款密码">
+						</div>
+					</div>
+
+					<a href="javascript:void()"  class="btn btn-info"  onclick="commit()" >确定</a>
+				</form>
+
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+	
+		function commit() {
+			
+			$.ajax({
+	    		url: "${CONTEXT_PATH}/admin/access/inputPwd",
+	    		data: 'token=' + $('#token').val() + '&password=' + $('#password').val(),
+				success: function(data) {
+					
+					window.opener=null;
+					window.open('','_self');
+					window.close();
+					
+	    		}
+	    	});
+			
+		}
+	
+	
+	</script>
+	
+</body>
+</html>

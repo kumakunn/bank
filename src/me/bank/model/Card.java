@@ -28,8 +28,8 @@ public class Card extends Model<Card> {
 	 * 根据银行卡号获取银行卡信息（借记卡）默认传值type=11
 	 * 
 	 */
-	public Card getCardByUuidJJ(int type, String uuid) {
-		return dao.findFirst("select * from card where type=? and  uuid = ?",
+	public Card getCardByUuid(int type, String uuid) {
+		return dao.findFirst("select * from card where type= ? and uuid = ?",
 				type, uuid);
 	}
 
