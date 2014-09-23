@@ -4,7 +4,7 @@ import com.jfinal.core.Controller;
 import com.jfinal.validate.Validator;
 
 /**
- * GetMoneyValidator
+ * TakeOutValidator
  */
 public class TakeOutValidator extends Validator {
 	

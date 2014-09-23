@@ -5,7 +5,6 @@ import java.util.List;
 
 import me.bank.config.Constants;
 import me.bank.kit.DateKit;
-import me.bank.kit.ParaKit;
 import me.bank.kit.UploadKit;
 import me.bank.model.Card;
 import me.bank.model.User;
@@ -36,7 +35,7 @@ public class UserController extends Controller {
 
 		User user = User.dao.getUserByIdentity(identity);
 		setAttr("user", user);
-		
+
 		System.out.println("user = " + user);
 
 		List<Card> cardList = new ArrayList<Card>();

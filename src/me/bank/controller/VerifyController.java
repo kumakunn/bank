@@ -17,7 +17,7 @@ import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 
 /**
- * CardController
+ * VerifyController
  * 
  * 银行卡管理
  * 
@@ -111,30 +111,33 @@ public class VerifyController extends Controller {
 	}
 
 	public void goCheckCard() {
-		String cardId = getPara("cardId");
-		Card card = Card.dao.findById(cardId);
+		String cid = getPara("cardId");
+		Card card = Card.dao.findById(cid);
 		String identity = card.get("identity");
 		User user = User.dao.getUserByIdentity(identity);
-		CreditInfo ad = CreditInfo.dao.getCreditInfoByUserId(Integer.valueOf(user.get("id")
-				.toString()));
+		CreditInfo creditInfo = CreditInfo.dao.getCreditInfoByUserId(user.getInt("id"));
 
 		setAttr("user", user);
-		setAttr("applicationdata", ad);// 信用填写信息
+		setAttr("credit", creditInfo);
 		setAttr("card", card);
+
 		render("check.html");
 	}
 
 	public void checkCard() {
-		int id = getParaToInt("cardId");
+
+		int id = getParaToInt("cid");
 		Card card = Card.dao.findById(id);
-		int result = getParaToInt("result");
-		System.out.println(result);
+		int status = getParaToInt("status");
+
+		System.out.println("status: " + status);
+
 		if (card != null) {
-			card.set("status", result);
+			card.set("status", status);
 			card.update();
-			renderJson("msg", "审核成功！");
+			renderJson("status", "success");
 		} else {
-			renderJson("msg", "审核失败！");
+			renderJson("status", "failed");
 		}
 
 	}

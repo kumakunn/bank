@@ -32,9 +32,7 @@ public class CardKit {
 				card += s;
 			}
 
-			System.out.println(card.length() + "借记卡:" + card);
-
-		} else if (type == 12) {
+		} else {
 			// 货记卡
 			card += header2[headerFlag] + cityNum;
 			// 补天剩余6位数
@@ -42,8 +40,6 @@ public class CardKit {
 				String s = String.valueOf((int) (Math.random() * 10));
 				card += s;
 			}
-
-			System.out.println(card.length() + "货记卡:" + card);
 		}
 			
 		

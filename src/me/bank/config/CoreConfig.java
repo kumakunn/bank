@@ -1,7 +1,6 @@
 package me.bank.config;
 
 import me.bank.interceptor.SessionInterceptor;
-import me.bank.model.Access;
 import me.bank.model.Admin;
 import me.bank.model.Card;
 import me.bank.model.CreditInfo;
@@ -40,7 +39,7 @@ public class CoreConfig extends JFinalConfig {
 		me.setDevMode(getPropertyToBoolean("devMode", false));
 
 		me.setBaseViewPath("WEB-INF/templates");
-		
+
 		me.setError404View("/error/404.html");
 	}
 
@@ -58,8 +57,8 @@ public class CoreConfig extends JFinalConfig {
 	public void configPlugin(Plugins me) {
 
 		// 配置C3p0数据库连接池插件
-		C3p0Plugin c3p0Plugin = new C3p0Plugin(getProperty("jdbcUrl"),
-				getProperty("user"), getProperty("password").trim());
+		C3p0Plugin c3p0Plugin = new C3p0Plugin(getProperty("jdbcUrl"), getProperty("user"),
+				getProperty("password").trim());
 		me.add(c3p0Plugin);
 
 		// 配置ActiveRecord插件
@@ -76,7 +75,6 @@ public class CoreConfig extends JFinalConfig {
 		arp.addMapping("role", Role.class);
 		arp.addMapping("role_permission", "roleId", RolePermission.class);
 		arp.addMapping("dictionary", Dictionary.class);
-		arp.addMapping("access", Access.class);
 		arp.addMapping("user", User.class);
 		arp.addMapping("card", Card.class);
 		arp.addMapping("detail", Detail.class);

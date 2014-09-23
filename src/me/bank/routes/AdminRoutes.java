@@ -7,6 +7,7 @@ import me.bank.controller.IndexController;
 import me.bank.controller.MyInfoController;
 import me.bank.controller.TellerController;
 import me.bank.controller.UserController;
+import me.bank.controller.VerifyController;
 
 import com.jfinal.config.Routes;
 
@@ -35,6 +36,9 @@ public class AdminRoutes extends Routes {
 
 		// 柜员信息管理
 		add("admin/teller", TellerController.class);
+
+		// 信用卡审核
+		add("admin/verify", VerifyController.class);
 
 	}
 

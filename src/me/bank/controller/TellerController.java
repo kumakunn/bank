@@ -5,21 +5,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.jfinal.aop.Before;
-import com.jfinal.core.Controller;
-import com.jfinal.plugin.activerecord.Page;
-import com.jfinal.upload.UploadFile;
-
-import me.bank.interceptor.TellerInterceptor;
 import me.bank.config.Constants;
+import me.bank.interceptor.TellerInterceptor;
 import me.bank.kit.Cn2Spell;
 import me.bank.kit.DateKit;
+import me.bank.kit.ParaKit;
 import me.bank.kit.UUID;
 import me.bank.kit.UploadKit;
 import me.bank.model.Admin;
 import me.bank.model.Teller;
 import me.bank.validator.SaveTellerValidator;
-import me.bank.kit.ParaKit;
+
+import com.jfinal.aop.Before;
+import com.jfinal.core.Controller;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.upload.UploadFile;
+
 /**
  * CardController
  * 
@@ -30,7 +31,7 @@ import me.bank.kit.ParaKit;
 public class TellerController extends Controller {
 
 	public void index() {
-		
+
 		// 判断当前是否是搜索的数据进行的分页
 		// 如果是搜索的数据，则跳转至search方法处理
 		if (!ParaKit.isEmpty(getPara("s"))) {
@@ -48,18 +49,15 @@ public class TellerController extends Controller {
 		// 读取所有的柜员
 		Page<Teller> tellerList = Teller.dao.paginate(page, Constants.PAGE_SIZE);
 		setAttr("tellerList", tellerList);
-		
+
 		setAttr("searchUuid", "");
 		setAttr("searchName", "");
 		setAttr("searchSex", -1);
 		setAttr("searchPage", Constants.NOT_SEARCH_PAGE);
-		
+
 		render("index.html");
 	}
 
-	
-	
-	
 	/**
 	 * 搜索
 	 */
@@ -131,11 +129,10 @@ public class TellerController extends Controller {
 
 	}
 
-	
 	public void add() {
 		render("add.html");
 	}
-	
+
 	/**
 	 * 添加/修改柜员信息处理方法
 	 */
@@ -162,33 +159,38 @@ public class TellerController extends Controller {
 		if (teller.get("sort") == null || teller.get("sort").equals("")) {
 			teller.set("sort", 1);
 		}
+
 		if (null == teller.getInt("id")) {
 			// 设置注册时间
 			teller.set("time", DateKit.getDateTime());
 			teller.set("uuid", UUID.randomUUID());
 			teller.save();
-			
-			
-			//新增柜员登陆账号密码
-				//账号为用户的姓名的拼音密码身份证后六位
+
+			// 新增柜员登陆账号密码
+			// 账号:姓名的拼音
+			// 密码:身份证后六位
 			String name = teller.get("name");
 			Cn2Spell cs = Cn2Spell.getInstance();
 			name = cs.getSpelling(name);
 			Admin admin = new Admin();
 			admin.set("account", name);
 			String password = teller.get("identity").toString();
-			if(password.length()==15){
-				password = password.substring(9,15);
-			}else{
-				password = password.substring(12,18);
+
+			if (password.length() == 15) {
+				password = password.substring(9, 15);
+			} else {
+				password = password.substring(12, 18);
 			}
+
 			admin.set("password", password);
-			//角色代码
+
+			// 角色代码
 			admin.set("rid", 3);
-			//柜员id
+			// 柜员id
 			admin.set("tid", teller.get("id"));
+
 			admin.save();
-		
+
 		} else {
 			teller.update();
 		}
@@ -196,7 +198,6 @@ public class TellerController extends Controller {
 		redirect("index.html");
 	}
 
-	
 	/**
 	 * 跳转编辑页面
 	 * 
@@ -206,7 +207,7 @@ public class TellerController extends Controller {
 		setAttr("teller", Teller.dao.findById(tellerId));
 		render("add.html");
 	}
-	
+
 	/**
 	 * 删除信息
 	 */

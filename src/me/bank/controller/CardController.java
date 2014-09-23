@@ -64,43 +64,12 @@ public class CardController extends Controller {
 		render("index.html");
 	}
 
-	/**
-	 * 跳转新增页面
-	 * 
-	 */
-	public void add() {
-		
-		Card card = getModel(Card.class);
-		
-		String identity = card.getStr("identity");
-		
-		System.out.println("identity: " + identity);
-		
-		User user = User.dao.getUserByIdentity(identity);
-//		int userId = getParaToInt("userId");
-//		User user = User.dao.findById(userId);
-		setAttr("user", user);
-		
-		// 默认数据
-		setAttr("selectMarryType", -1);
-		setAttr("selectCardType", card.getInt("type"));
-		setAttr("selectHome", -1);
-		
-		if (user != null) {
-			render("add.html");
-		} else {
-			render("index.html");
-		}
-
-	}
 
 	/**
 	 * 新增卡号
 	 */
 	@Before(SaveCardValidator.class)
 	public void save() {
-		
-		System.out.println("CardController->save");
 		
 		Card card = getModel(Card.class);
 		String identity = card.get("identity");
@@ -110,7 +79,7 @@ public class CardController extends Controller {
 			// 生成卡号
 			cardCode = randomCard(cardType);
 
-			System.out.println("CardController->cardCode : " + cardCode);
+			System.out.println("card: " + cardCode);
 			
 			// 审核需要普卡不需要审核 1代表通过审核 0代表未通过审核
 			if (cardType == 11) {
@@ -121,18 +90,20 @@ public class CardController extends Controller {
 			}
 
 			card.set("uuid", cardCode);
+			
 			// 如果设置密码为空，默认取款密码为卡号后6位数
-			String getmp = card.get("password");
-			if (ParaKit.isEmpty(getmp)) {
-				String getmoneyp = "";
+			String password = card.get("password");
+			if (ParaKit.isEmpty(password)) {
 				if (cardCode.length() == 19) {
-					getmoneyp = cardCode.substring(13, 19);
+					password = cardCode.substring(13, 19);
 				} else {
-					getmoneyp = cardCode.substring(10, 16);
+					password = cardCode.substring(10, 16);
 				}
-				card.set("password", getmoneyp);
+				card.set("password", password);
 			}
+			
 			card.set("createTime", DateKit.getDateTime());
+			
 			card.save();
 
 			/**
