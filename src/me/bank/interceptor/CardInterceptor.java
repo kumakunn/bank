@@ -24,6 +24,7 @@ public class CardInterceptor implements Interceptor {
 		System.out.println("cardTypes.size = " + cardTypes.size());
 
 		controller.setAttr("cardTypes", cardTypes);
+		
 		/****** 信用卡所需 *****/
 		// 读取婚姻状况
 		List<Dictionary> marryTypes = Dictionary.dao.getDictionaryByKey("marryType");

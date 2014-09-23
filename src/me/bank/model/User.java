@@ -36,7 +36,7 @@ public class User extends Model<User> {
 	 */
 	public List<Card> getCards() {
 		if (cards == null) {
-			cards = Card.dao.find("select * from card where `identity` = ?", get("identity"));
+			cards = Card.dao.find("select * from card where `identity` = ? order by createTime desc", get("identity"));
 		}
 		return cards;
 	}

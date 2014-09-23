@@ -7,7 +7,7 @@ import com.jfinal.core.Controller;
 import com.jfinal.validate.Validator;
 
 /**
- * GetMoneyValidator
+ * SaveCardValidator
  */
 public class SaveCardValidator extends Validator {
 
@@ -15,12 +15,12 @@ public class SaveCardValidator extends Validator {
 		int cardType = controller.getParaToInt("card.type");
 		if (cardType != 11) {
 			// 信用卡需要验证
-			validateInteger("credit.nowLiveTime", 1, 100, "nowLiveTimeMsg", "必须为数字");
-			validateInteger("credit.companyTime", 1, 100, "companyTimeMsg", "现单位工作年度错误1-100之间");
-			validateDouble("credit.personalIncome", 1, 999999999, "personalIncomeMsg", "年收入错误");
-			validateString("credit.company", 5, 30, "companyMsg", "填写长度应在5-30之间");
-			validateString("credit.occupation", 1, 10, "occupationMsg", "职业描述在1-10个字");
-			validateString("credit.occupationType", 1, 10, "occupationTypeMsg", "行业种类在1-10个字");
+			validateInteger("credit.liveTime", 1, 100, "liveTimeMsg", "必须为数字");
+			validateDouble("credit.income", 1, 999999999, "incomeMsg", "年收入错误");
+			validateString("credit.company", 3, 30, "companyMsg", "填写长度应在3-30之间");
+			validateInteger("credit.experience", 1, 30, "experienceMsg", "现单位工作年度错误1-30之间");
+			validateString("credit.career", 1, 10, "careerMsg", "职业描述在1-10个字");
+			validateString("credit.careerType", 1, 10, "careerTypeMsg", "行业种类在1-10个字");
 			validateString("credit.title", 1, 10, "titleMsg", "职称在1-10个字");
 			validateString("credit.position", 1, 10, "positionMsg", "职务描述在1-10个字");
 		} else {
@@ -30,8 +30,12 @@ public class SaveCardValidator extends Validator {
 	}
 
 	protected void handleError(Controller controller) {
+		
+		System.out.println("SaveCardValidator->handleError");
+		
 		String identity = controller.getPara("card.identity");
 		User user = User.dao.getUserByIdentity(identity);
+		
 		controller.setAttr("user", user);
 		controller.keepModel(CreditInfo.class);
 		controller.setAttr("selectCardType", controller.getParaToInt("card.type"));
@@ -40,7 +44,7 @@ public class SaveCardValidator extends Validator {
 
 		String actionKey = getActionKey();
 		System.out.println("actionKey: " + actionKey);
-		controller.render("add.html");
+		controller.render("index.html");
 
 	}
 }

@@ -57,6 +57,10 @@ public class CardController extends Controller {
 			setAttr("nobody", true);
 		}
 
+		setAttr("selectMarryType", -1);
+		setAttr("selectCardType", 11);
+		setAttr("selectHome", -1);
+		
 		render("index.html");
 	}
 
@@ -64,15 +68,24 @@ public class CardController extends Controller {
 	 * 跳转新增页面
 	 * 
 	 */
-
 	public void add() {
-		int userId = getParaToInt("userId");
-		User user = User.dao.findById(userId);
+		
+		Card card = getModel(Card.class);
+		
+		String identity = card.getStr("identity");
+		
+		System.out.println("identity: " + identity);
+		
+		User user = User.dao.getUserByIdentity(identity);
+//		int userId = getParaToInt("userId");
+//		User user = User.dao.findById(userId);
 		setAttr("user", user);
+		
 		// 默认数据
 		setAttr("selectMarryType", -1);
-		setAttr("selectCardType", 11);
+		setAttr("selectCardType", card.getInt("type"));
 		setAttr("selectHome", -1);
+		
 		if (user != null) {
 			render("add.html");
 		} else {
@@ -86,6 +99,9 @@ public class CardController extends Controller {
 	 */
 	@Before(SaveCardValidator.class)
 	public void save() {
+		
+		System.out.println("CardController->save");
+		
 		Card card = getModel(Card.class);
 		String identity = card.get("identity");
 		String cardCode = "";
@@ -94,6 +110,8 @@ public class CardController extends Controller {
 			// 生成卡号
 			cardCode = randomCard(cardType);
 
+			System.out.println("CardController->cardCode : " + cardCode);
+			
 			// 审核需要普卡不需要审核 1代表通过审核 0代表未通过审核
 			if (cardType == 11) {
 				card.set("status", 1);
@@ -117,7 +135,7 @@ public class CardController extends Controller {
 			card.set("createTime", DateKit.getDateTime());
 			card.save();
 
-			/****
+			/**
 			 * 信誉卡信息填写
 			 */
 			if (cardType != 11) {

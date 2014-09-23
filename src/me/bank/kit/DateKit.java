@@ -10,7 +10,7 @@ public class DateKit {
 	public static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
 	/**
-	 * 获取今天的日�?
+	 * 获取今天的日�?
 	 * 
 	 * @return
 	 */
@@ -62,7 +62,7 @@ public class DateKit {
 	
 	
 	/**
-	 * 根据日期字符串获取年�?
+	 * 根据日期字符串获取年�?
 	 * @param format
 	 * @param dateStr
 	 * @return
@@ -76,7 +76,7 @@ public class DateKit {
 	}
 
 	/**
-	 * 根据日期字符串获取月�?
+	 * 根据日期字符串获取月�?
 	 * @param format
 	 * @param dateStr
 	 * @return
@@ -91,12 +91,12 @@ public class DateKit {
 	}
 	
 	/**
-	 * 获取今天的日期时�?
+	 * 获取今天的日期时�?
 	 * 
 	 * @return
 	 */
 	public static String getDateTime() {
-		formatter.applyPattern("yyyy-MM-dd hh:mm:ss");
+		formatter.applyPattern("yyyy-MM-dd HH:mm:ss");
 		return formatter.format(new Date());
 	}
 }
